@@ -231,6 +231,7 @@ export async function createVariant(
       label: record.label,
       price: record.price,
       stock: record.stock,
+      volumeMl: record.volumeMl,
       isAvailable: record.isAvailable && record.stock > 0,
       sortOrder: record.sortOrder || 0,
     };
@@ -283,6 +284,7 @@ export async function updateVariant(
       label: record.label,
       price: record.price,
       stock: record.stock,
+      volumeMl: record.volumeMl,
       isAvailable: record.isAvailable && record.stock > 0,
       sortOrder: record.sortOrder || 0,
     };

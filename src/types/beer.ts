@@ -42,6 +42,7 @@ export interface Beer {
   id: string;
   slug: string;
   name: string;
+  tagline?: string;
   style: string;
   category: BeerCategory;
   description: string;
@@ -53,9 +54,11 @@ export interface Beer {
   image: string;
   tastingNotes?: string[];
   foodPairings?: string[];
+  isActive?: boolean;
   isNew?: boolean;
   isLimited?: boolean;
   isFeatured?: boolean;  // Show in homepage lineup
+  displayOrder?: number;
   sortOrder?: number;
   variants: BeerVariant[];
 }
@@ -104,6 +107,7 @@ export interface PocketBaseVariant {
   label: string;
   price: number;
   stock: number;
+  volumeMl: number;
   isAvailable: boolean;
   sortOrder: number;
   created: string;

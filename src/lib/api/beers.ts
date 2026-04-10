@@ -22,6 +22,7 @@ function transformVariant(record: PocketBaseVariant, beerId: string): BeerVarian
     label: record.label,
     price: record.price,
     stock: record.stock,
+    volumeMl: record.volumeMl,
     isAvailable: record.isAvailable && record.stock > 0,
     sortOrder: record.sortOrder || 0,
   };
@@ -86,6 +87,7 @@ function addDefaultVariant(staticBeer: typeof staticBeers[0]): Beer {
     label: 'Flesje 33cl',
     price: staticBeer.price,
     stock: staticBeer.isAvailable ? 100 : 0,
+    volumeMl: 330,
     isAvailable: staticBeer.isAvailable,
     sortOrder: 0,
   };

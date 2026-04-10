@@ -4,9 +4,10 @@ import { useCartStore } from "@/store/cart";
 
 interface FloatingCartBarProps {
   onCheckout: () => void;
+  className?: string;
 }
 
-export default function FloatingCartBar({ onCheckout }: FloatingCartBarProps) {
+export default function FloatingCartBar({ onCheckout, className }: FloatingCartBarProps) {
   const items = useCartStore((state) => state.items);
   const getTotalItems = useCartStore((state) => state.getTotalItems);
   const getTotalPrice = useCartStore((state) => state.getTotalPrice);
@@ -17,7 +18,7 @@ export default function FloatingCartBar({ onCheckout }: FloatingCartBarProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className="fixed bottom-5 left-5 right-5 bg-dark text-white py-4 px-5 flex justify-between items-center shadow-xl border-2 border-primary z-50 lg:hidden transition-transform duration-300">
+    <div className={`fixed bottom-5 left-5 right-5 bg-dark text-white py-4 px-5 flex justify-between items-center shadow-xl border-2 border-primary z-50 lg:hidden transition-transform duration-300 ${className || ""}`}>
       <div className="flex items-center gap-3">
         <span className="w-6 h-6 bg-primary text-dark rounded-full flex items-center justify-center font-bold text-sm">
           {totalItems}
