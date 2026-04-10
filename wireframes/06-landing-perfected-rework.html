@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="nl-BE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troebel Brewing Co. | GARAGE VIBE</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Permanent+Marker&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Brand Colors based on the Cartoon Image */
+      --color-gold: #D4A017;
+      --color-yellow: #FFC000; /* Warm Brand Yellow */
+      --color-dark: #1C1C1C;   /* Soft Black */
+      --color-white: #FFFFFF;
+      --color-cream: #FFFDF7;
+      --color-red: #E63946;
+      
+      --font-heading: 'Anton', sans-serif; 
+      --font-body: 'Roboto Condensed', sans-serif;
+      --font-hand: 'Permanent Marker', cursive;
+      
+      --border-thick: 4px solid var(--color-dark);
+      --shadow-hard: 6px 6px 0px var(--color-dark);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--color-white);
+      color: var(--color-dark);
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3 {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      text-transform: uppercase;
+      line-height: 0.9;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 3px solid var(--color-dark);
+      background: var(--color-yellow);
+      color: var(--color-dark);
+      transition: all 0.2s;
+      box-shadow: 4px 4px 0px var(--color-dark);
+      transform: rotate(-1deg);
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+
+    .btn:hover {
+      transform: translate(-2px, -2px) rotate(0deg);
+      box-shadow: 6px 6px 0px var(--color-dark);
+      background: var(--color-white);
+    }
+
+    /* HEADER */
+    header {
+      padding: 1.5rem 3rem;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      color: var(--color-dark);
+      letter-spacing: -0.05em;
+      text-shadow: 2px 2px 0px var(--color-yellow);
+    }
+    
+    /* HERO SECTION */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr;
+      padding-top: 80px; /* Space for header */
+      background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f0f0f0 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media(min-width: 1000px) {
+      .hero { 
+        grid-template-columns: 55% 45%; 
+        align-items: center;
+      }
+    }
+
+    .hero-content {
+      padding: 4rem 3rem;
+      z-index: 10;
+      position: relative;
+    }
+
+    .hero-title {
+      font-size: clamp(4rem, 9vw, 8rem);
+      color: var(--color-yellow);
+      margin-bottom: 2rem;
+      -webkit-text-stroke: 3px var(--color-dark);
+      text-shadow: 5px 5px 0px var(--color-dark);
+      transform: rotate(-1deg);
+      line-height: 0.85;
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      font-weight: 700;
+      max-width: 500px;
+      margin-bottom: 3rem;
+      background: var(--color-dark);
+      color: var(--color-white);
+      padding: 1rem;
+      transform: rotate(1deg);
+      box-shadow: 5px 5px 0px var(--color-yellow);
+      display: inline-block;
+    }
+
+    .hero-image-container {
+      position: relative;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-cartoon {
+      width: 90%;
+      max-width: 700px;
+      transform: rotate(2deg);
+      border: 6px solid var(--color-white);
+      box-shadow: 
+        0 0 0 4px var(--color-dark),
+        15px 15px 0px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    
+    .hero-cartoon:hover {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    /* Sticker Elements */
+    .sticker {
+      position: absolute;
+      z-index: 20;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .sticker-new {
+      top: 15%;
+      right: 10%;
+      background: var(--color-red);
+      color: white;
+      padding: 1rem;
+      border-radius: 50%;
+      font-family: var(--font-hand);
+      font-size: 1.2rem;
+      transform: rotate(15deg);
+      border: 3px solid var(--color-dark);
+      box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(15deg); }
+      50% { transform: translateY(-10px) rotate(10deg); }
+    }
+
+    /* MARQUEE */
+    .marquee {
+      background: var(--color-yellow);
+      color: var(--color-dark);
+      padding: 1rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+      border-top: var(--border-thick);
+      border-bottom: var(--border-thick);
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      transform: rotate(-1deg) scale(1.02);
+      z-index: 20;
+      position: relative;
+      margin-top: -2rem;
+    }
+
+    /* BEERS SECTION */
+    .section-beers {
+      padding: 8rem 2rem;
+      background-image: 
+        linear-gradient(var(--color-dark) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-dark) 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-color: #fafafa;
+      background-position: center center;
+    }
+
+    /* Subtle grid fade */
+    .section-beers {
+      mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+    }
+
+    .beer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 3rem;
+      max-width: 1400px;
+      margin: 4rem auto 0;
+    }
+
+    .beer-card {
+      background: var(--color-white);
+      border: var(--border-thick);
+      padding: 1rem;
+      position: relative;
+      box-shadow: 8px 8px 0px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .beer-card:hover {
+      transform: translate(-5px, -5px);
+      box-shadow: 12px 12px 0px var(--color-yellow);
+      z-index: 10;
+    }
+
+    .beer-img-container {
+      background: #f4f4f4;
+      height: 320px;
+      border: 2px solid var(--color-dark);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .beer-img-container img {
+      max-height: 90%;
+      object-fit: contain;
+      transition: 0.3s;
+    }
+    
+    .beer-card:hover .beer-img-container img {
+      transform: scale(1.1) rotate(2deg);
+    }
+
+    .beer-badge {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      background: var(--color-yellow);
+      color: var(--color-dark);
+      border: 2px solid var(--color-dark);
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      transform: translate(10px, -10px) rotate(5deg);
+      box-shadow: 2px 2px 0px var(--color-dark);
+    }
+    
+    .beer-info h3 {
+      font-size: 2.5rem;
+      margin-bottom: 0.2rem;
+    }
+    
+    .beer-style {
+      font-family: var(--font-hand);
+      color: #666;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .add-btn {
+      width: 100%;
+      background: var(--color-dark);
+      color: var(--color-white);
+      border: none;
+      padding: 1rem;
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    
+    .add-btn:hover {
+      background: var(--color-yellow);
+      color: var(--color-dark);
+    }
+
+    /* STORY SECTION */
+    .section-story {
+      background: var(--color-dark);
+      color: var(--color-cream);
+      padding: 8rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .section-story::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 10px;
+      background: repeating-linear-gradient(45deg, var(--color-yellow), var(--color-yellow) 10px, var(--color-dark) 10px, var(--color-dark) 20px);
+    }
+
+    .story-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    
+    @media(min-width: 900px) {
+      .story-layout { grid-template-columns: 1fr 1fr; }
+    }
+
+    .polaroid {
+      background: white;
+      padding: 15px 15px 50px 15px;
+      transform: rotate(-3deg);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .polaroid img { width: 100%; filter: grayscale(100%); transition: 0.5s; }
+    .polaroid:hover img { filter: grayscale(0%); }
+
+    /* HORECA SECTION */
+    .section-horeca {
+      background: var(--color-yellow);
+      padding: 6rem 2rem;
+      text-align: center;
+      border-top: var(--border-thick);
+      position: relative;
+    }
+    
+    .checklist-container {
+      background: var(--color-white);
+      border: var(--border-thick);
+      display: inline-block;
+      padding: 3rem;
+      transform: rotate(1deg);
+      box-shadow: 10px 10px 0px var(--color-dark);
+      max-width: 800px;
+    }
+
+    .checklist-items {
+      list-style: none;
+      text-align: left;
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      margin: 2rem 0;
+    }
+
+    .checklist-items li {
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .check-box {
+      width: 30px;
+      height: 30px;
+      border: 3px solid var(--color-dark);
+      display: grid;
+      place-items: center;
+    }
+    
+    .check-box::after {
+      content: '✓';
+      font-weight: 900;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--color-dark);
+      color: var(--color-white);
+      padding: 4rem 2rem;
+      text-align: center;
+      border-top: 5px solid var(--color-white);
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-text">TROEBEL.</div>
+    <nav style="display: none; gap: 2rem; font-family: var(--font-heading); font-size: 1.2rem; @media(min-width: 768px) { display: flex; }">
+      <a href="#" style="text-decoration: none; color: var(--color-dark);">Bieren</a>
+      <a href="#" style="text-decoration: none; color: var(--color-dark);">Over Ons</a>
+    </nav>
+    <a href="#" class="btn" style="padding: 0.8rem 1.5rem; font-size: 1rem;">Shop</a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        TROEBEL IS<br>
+        HET NIEUWE<br>
+        <span style="color: var(--color-white); -webkit-text-stroke: 3px var(--color-yellow); text-shadow: 5px 5px 0px var(--color-dark);">HELDER</span>
+      </h1>
+      <div class="hero-subtitle">
+        Nano-brouwerij met een hoek af. Wij brouwen wat we zelf willen drinken.
+      </div>
+      <div>
+        <a href="#beers" class="btn">Ontdek onze bieren</a>
+      </div>
+    </div>
+    
+    <div class="hero-image-container">
+      <div class="sticker sticker-new">GARAGE<br>MADE!</div>
+      <img src="../public/Cartoon brouwen.png" alt="Troebel Brewing Cartoon" class="hero-cartoon">
+    </div>
+  </section>
+
+  <div class="marquee">
+    <div style="display: inline-block; animation: marquee 25s linear infinite;">
+      !!! NIEUWE RELEASE: MOESKOPJE !!! GRATIS LEVERING VANAF €50 !!! DRINK LOKAAL OF STERF !!! TROEBEL BREWING ANTWERPEN !!! 
+      !!! NIEUWE RELEASE: MOESKOPJE !!! GRATIS LEVERING VANAF €50 !!! DRINK LOKAAL OF STERF !!! TROEBEL BREWING ANTWERPEN !!!
+    </div>
+  </div>
+  <style>@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }</style>
+
+  <section id="beers" class="section-beers">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <h2 style="font-size: 4rem; color: var(--color-dark);">De Line-up</h2>
+      <p style="font-family: var(--font-hand); font-size: 1.5rem; color: #666;">Troep op de fles, feest in het glas.</p>
+    </div>
+
+    <div class="beer-grid">
+      <!-- Seasonal Rendier -->
+      <article class="beer-card">
+        <div class="beer-badge" style="background: var(--color-red); color: white;">8.5%</div>
+        <div class="beer-img-container">
+          <img src="../public/Rendier (winter ale).png" alt="Rendier">
+        </div>
+        <div class="beer-info">
+          <h3>Rendier</h3>
+          <span class="beer-style">Winter Ale</span>
+          <button class="add-btn">Bestellen €3.50</button>
+        </div>
+      </article>
+
+      <!-- Moeskop -->
+      <article class="beer-card">
+        <div class="beer-badge">6.5%</div>
+        <div class="beer-img-container">
+          <img src="../public/Moeskopje bier.png" alt="Moeskop">
+        </div>
+        <div class="beer-info">
+          <h3>Moeskop</h3>
+          <span class="beer-style">Blond</span>
+          <button class="add-btn">Bestellen €3.00</button>
+        </div>
+      </article>
+
+      <!-- Brews Almighty -->
+      <article class="beer-card">
+        <div class="beer-badge" style="background: var(--color-dark); color: white;">5.8%</div>
+        <div class="beer-img-container">
+          <img src="../public/Brews almighty bottle.png" alt="Brews Almighty">
+        </div>
+        <div class="beer-info">
+          <h3>Brews Almighty</h3>
+          <span class="beer-style">Pale Ale</span>
+          <button class="add-btn">Bestellen €3.20</button>
+        </div>
+      </article>
+      
+       <!-- Marwals -->
+      <article class="beer-card">
+        <div class="beer-badge">8.0%</div>
+        <div class="beer-img-container">
+          <img src="../public/MARWALS.jpg" alt="Marwals">
+        </div>
+        <div class="beer-info">
+          <h3>Marwals</h3>
+          <span class="beer-style">Tripel</span>
+          <button class="add-btn">Bestellen €3.80</button>
+        </div>
+      </article>
+      
+      <!-- Bi'tje -->
+      <article class="beer-card">
+        <div class="beer-badge" style="background: #eee;">4.2%</div>
+        <div class="beer-img-container">
+          <img src="../public/BI'TJE.jpg" alt="Bi'tje">
+        </div>
+        <div class="beer-info">
+          <h3>Bi'tje</h3>
+          <span class="beer-style">Session</span>
+          <button class="add-btn">Bestellen €3.00</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-story">
+    <div class="story-layout">
+      <div class="polaroid">
+        <img src="../public/founders.jpg" alt="Founders">
+        <div style="text-align: center; font-family: 'Permanent Marker', cursive; margin-top: 1rem; font-size: 1.5rem; color: black;">
+          De Schuldigen (2024)
+        </div>
+      </div>
+      <div>
+        <h2 style="font-size: 3.5rem; color: var(--color-yellow); margin-bottom: 2rem;">NIET HELDER,<br>WEL BRILJANT</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 1.5rem; line-height: 1.8;">
+          Wat begon in een garage met een tweedehands brouwketel en te veel goesting, is nu Troebel.
+        </p>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #ccc;">
+          Wij geloven niet in gladgestreken marketing of smaakloos bier. Elk brouwsel heeft karakter. Soms wat troebel, altijd oprecht.
+        </p>
+        <a href="#" class="btn" style="background: var(--color-white); color: var(--color-dark);">Het hele verhaal</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HORECA SECTION -->
+  <section class="section-horeca">
+    <div class="checklist-container">
+      <h2>TROEBEL OP JE TOOG?</h2>
+      <ul class="checklist-items">
+        <li><div class="check-box"></div> GEEN STANDAARD PILS</li>
+        <li><div class="check-box"></div> CONVERSATIE STARTER</li>
+        <li><div class="check-box"></div> GEEN WURGCONTRACTEN</li>
+        <li><div class="check-box"></div> PERSOONLIJKE LEVERING</li>
+      </ul>
+      <a href="#" class="btn" style="transform: rotate(-1deg) scale(1.1); background: var(--color-dark); color: var(--color-white);">Partner Worden -></a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo-text" style="font-size: 4rem; margin-bottom: 1rem; color: var(--color-white);">TROEBEL.</div>
+    <div style="display: flex; justify-content: center; gap: 2rem; font-size: 1.2rem; font-weight: bold; font-family: var(--font-heading);">
+      <a href="#" style="color: var(--color-yellow); text-decoration: none;">INSTAGRAM</a>
+      <a href="#" style="color: var(--color-yellow); text-decoration: none;">UNTAPPD</a>
+      <a href="#" style="color: var(--color-yellow); text-decoration: none;">MAIL ONS</a>
+    </div>
+    <p style="margin-top: 3rem; color: #999;">&copy; 2025 Troebel Brewing Co.</p>
+  </footer>
+
+</body>
+</html>

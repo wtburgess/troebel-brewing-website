@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.vantajs.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(ssh wouter@192.168.1.63 \"docker ps --format ''table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'' | grep -i troebel\")",
+      "Bash(git push)",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}
