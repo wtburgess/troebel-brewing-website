@@ -56,7 +56,7 @@ export default function Home() {
           <div className="beer-card frambo">
             <div className="beer-img">
               <span className="beer-abv">4,8%</span>
-              <img src="/frambo_mockup.png" alt="Frambo label" />
+              <img src="/Frambo_mockup.png" alt="Frambo label" />
             </div>
             <div className="beer-body">
               <h3 className="beer-name">FRAMBO</h3>

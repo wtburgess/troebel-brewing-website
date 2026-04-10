@@ -71,7 +71,7 @@ const STATIC_BEERS: Beer[] = [
     category: "seasonal",
     abv: 4.8,
     ibu: 15,
-    image: "/frambo_mockup.png",
+    image: "/Frambo_mockup.png",
     isActive: true,
     isFeatured: true,
     displayOrder: 2,
