@@ -603,7 +603,7 @@ export default function BestellenPage() {
                             placeholder="Speciale wensen?"
                             className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors resize-none"
                             style={{ height: '80px' }}
-                          />
+                            ></textarea>
                         </div>
                       </div>
                     </section>
@@ -745,11 +745,8 @@ export default function BestellenPage() {
                     </div>
                   </aside>
                 </div>
+              </div>
               </form>
-            </>
-          ) : (
-            /* Empty state - just close the divs */
-            <></>
           )}
         </div>
       </main>
