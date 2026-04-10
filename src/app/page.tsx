@@ -56,7 +56,7 @@ export default function Home() {
           <div className="beer-card frambo">
             <div className="beer-img">
               <span className="beer-abv">4,8%</span>
-              <img src="/Frambo_mockup.png" alt="Frambo label" />
+              <img src="/Frambo_mockup.jpeg" alt="Frambo label" />
             </div>
             <div className="beer-body">
               <h3 className="beer-name">FRAMBO</h3>
@@ -66,15 +66,15 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="beer-card brews">
+          <div className="beer-card brews" style={{ backgroundColor: '#fed3a6', color: '#dc5b26' }}>
             <div className="beer-img">
               <span className="beer-abv">6,5%</span>
-              <img src="/Brews almighty_mockup.jpeg" alt="Brews Almighty label" />
+              <img src="/Brews almighty_mockup.png" alt="Brews Almighty label" />
             </div>
             <div className="beer-body">
-              <h3 className="beer-name">BREWS ALMIGHTY</h3>
-              <div className="beer-style">Blond</div>
-              <p className="beer-desc">Lichtblond met een machtige smaak. Hemelse citrusaccenten door whirlpoolhoppen. Bovenaards lekker.</p>
+              <h3 className="beer-name" style={{ color: '#dc5b26' }}>BREWS ALMIGHTY</h3>
+              <div className="beer-style" style={{ color: '#dc5b26' }}>Blond</div>
+              <p className="beer-desc" style={{ color: '#b84a1e' }}>Lichtblond met een machtige smaak. Hemelse citrusaccenten door whirlpoolhoppen. Bovenaards lekker.</p>
               <Link href="/bestellen" className="beer-btn">Bestellen →</Link>
             </div>
           </div>

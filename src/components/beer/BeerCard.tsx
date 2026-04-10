@@ -35,8 +35,11 @@ export default function BeerCard({ beer }: BeerCardProps) {
 
   const badgeStyle = getBadgeStyle();
 
+  // Custom styles for Brews Almighty
+  const isBrews = beerClass === 'brews';
+
   return (
-    <article className={`card-eticket group ${beerClass}`}>
+    <article className={`card-eticket group ${beerClass}`} style={isBrews ? { backgroundColor: '#fed3a6', borderColor: '#dc5b26' } : {}}>
       {/* Seasonal Ribbon */}
       {beer.isLimited && (
         <div className="ribbon-seasonal">SEASONAL</div>
@@ -69,16 +72,16 @@ export default function BeerCard({ beer }: BeerCardProps) {
       {/* Content */}
       <div className="px-2">
         <h3 className="text-2xl md:text-3xl leading-[0.95] mb-1">
-          <Link href={`/bieren/${beer.slug}`} className="hover:text-yellow transition-colors">
+          <Link href={`/bieren/${beer.slug}`} className={`transition-colors ${isBrews ? 'text-[#dc5b26] hover:text-[#b84a1e]' : 'hover:text-yellow'}`}>
             {beer.name}
           </Link>
         </h3>
 
-        <p className="font-bold text-gray-500 uppercase text-sm mb-3">
+        <p className={`font-bold uppercase text-sm mb-3 ${isBrews ? 'text-[#dc5b26]' : 'text-gray-500'}`}>
           {beer.style}
         </p>
 
-        <p className="text-gray-600 text-sm mb-4 leading-relaxed min-h-[40px]">
+        <p className={`text-sm mb-4 leading-relaxed min-h-[40px] ${isBrews ? 'text-[#b84a1e]' : 'text-gray-600'}`}>
           {beer.description}
         </p>
 
@@ -86,7 +89,7 @@ export default function BeerCard({ beer }: BeerCardProps) {
         {isAvailable ? (
           <button
             onClick={() => openModal(beer)}
-            className="btn-brutal w-full text-center text-base py-3"
+            className={`btn-brutal w-full text-center text-base py-3 ${isBrews ? 'bg-[#dc5b26] border-[#dc5b26] text-[#fed3a6] hover:bg-[#b84a1e] hover:border-[#b84a1e]' : ''}`}
             style={{ transform: 'none' }}
           >
             Bestellen - Vanaf €{lowestPrice.toFixed(2)}
