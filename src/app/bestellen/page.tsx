@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ShopCard from "@/components/shop/ShopCard";
@@ -185,43 +186,7 @@ export default function BestellenPage() {
 
   // Loading state
   if (!mounted || beersLoading) {
-    return (
-      <>
-        <Header />
-        <main className="pt-[70px] dots-pattern min-h-screen">
-          {/* Page Header */}
-          <section className="bg-dark text-white py-16 md:py-24 text-center">
-            <div className="max-w-[1200px] mx-auto px-6">
-              <h1
-                className="font-heading text-4xl md:text-6xl mb-6"
-                style={{ textShadow: '4px 4px 0px #D4A017' }}
-              >
-                De Webshop
-              </h1>
-              <p className="font-body text-white/70 max-w-2xl mx-auto text-lg md:text-xl">
-                Laden...
-              </p>
-            </div>
-          </section>
-
-          <section className="bg-cream py-16">
-            <div className="max-w-[1200px] mx-auto px-6">
-              <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-96 bg-dark/10 border-2 border-dark shadow-[4px_4px_0_#1C1C1C]" />
-                ))}
-              </div>
-            </div>
-          </section>
-        </main>
-        <Footer />
-      </>
-    );
-  }
-
-  const availableBeers = beers.filter((beer) => hasAvailableVariants(beer));
-
-  return (
+ return (
     <>
       <Header />
       <main className="pt-[70px] dots-pattern min-h-screen">
@@ -266,7 +231,7 @@ export default function BestellenPage() {
           ) : (
             /* State B: Checkout Dashboard */
             <form onSubmit={handleSubmit}>
-              <div className="max-w-[1200px] mx-auto px-6">
+              <div className="max-w-[1200px] mx-auto px-6 py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 lg:gap-12">
                   {/* Left Column */}
                   <div className="space-y-10">
@@ -363,28 +328,18 @@ export default function BestellenPage() {
                         ))}
                       </div>
 
-                      {/* Vergeten? Upsell Section */}
+                      {/* Upsell Section */}
                       {upsellBeers.length > 0 && (
                         <div className="mt-10 pt-10 border-t-2 border-dark">
                           <h3 className="font-heading text-2xl text-dark mb-5 flex items-center gap-2 uppercase tracking-wide">
                             <span>👀</span> Nog eentje voor de sfeer?
                           </h3>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            {upsellBeers.map((beer) => {
+                            {upsellBeers.slice(0, 4).map((beer) => {
                               const availableVariants = beer.variants.filter(
                                 (v) => v.isAvailable && v.stock > 0
                               );
                               if (availableVariants.length === 0) return null;
-
-                              const variantTypes = [...new Set(availableVariants.map((v) => v.type))];
-                              const GetVariantIcon = ({ type }: { type: string }) => {
-                                switch (type) {
-                                  case "bottle": return <Icons.Bottle className="w-4 h-4" />;
-                                  case "crate": return <Icons.Crate className="w-4 h-4" />;
-                                  case "keg": return <Icons.Keg className="w-4 h-4" />;
-                                  default: return <Icons.Other className="w-4 h-4" />;
-                                }
-                              };
 
                               const lowestPrice = Math.min(...availableVariants.map((v) => v.price));
 
@@ -409,23 +364,11 @@ export default function BestellenPage() {
                                     <span className="font-heading text-2xl text-dark block uppercase tracking-wide truncate">
                                       {beer.name}
                                     </span>
-                                    <div className="flex flex-wrap gap-1 my-2">
-                                      {variantTypes.map((type) => (
-                                        <span
-                                          key={type}
-                                          className="inline-flex items-center gap-1 text-[0.7rem] px-2 py-1 bg-dark text-primary font-bold uppercase tracking-wider"
-                                        >
-                                          <GetVariantIcon type={type} />
-                                          <span>{getVariantTypeLabel(type)}</span>
-                                        </span>
-                                      ))}
-                                    </div>
-                                      <span className="text-base font-body font-bold text-primary">
+                                    <span className="text-base font-body font-bold text-primary">
                                       Vanaf € {lowestPrice.toFixed(2)}
                                     </span>
                                   </div>
-
-                                  <span className="w-12 h-12 bg-dark text-primary border-2 border-dark flex items-center justify-center text-2xl font-heading group-hover:bg-primary group-hover:text-dark transition-colors flex-shrink-0">
+                                  <span className="w-10 h-10 bg-dark text-primary border-2 border-dark flex items-center justify-center text-xl font-heading group-hover:bg-primary group-hover:text-dark transition-colors flex-shrink-0">
                                     +
                                   </span>
                                 </button>
@@ -446,7 +389,6 @@ export default function BestellenPage() {
                           Levering
                         </h2>
                       </div>
-
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <label
                           className={`relative flex items-start gap-4 p-5 border-2 cursor-pointer transition-all ${
@@ -458,7 +400,6 @@ export default function BestellenPage() {
                           <input
                             type="radio"
                             name="fulfillment"
-                            value="pickup"
                             checked={fulfillment === "pickup"}
                             onChange={() => setFulfillment("pickup")}
                             className="mt-1.5 w-5 h-5 accent-primary"
@@ -466,287 +407,56 @@ export default function BestellenPage() {
                           <div>
                             <h4 className="font-bold text-base mb-1 uppercase font-body tracking-wider text-dark">Afhalen</h4>
                             <p className="text-sm text-gray-600 font-bold leading-relaxed">
-                              Bij de brouwerij in Antwerpen.
-                              <br />
-                              Na afspraak.
-                            </p>
-                          </div>
-                          <span className="absolute top-3 right-3 bg-dark text-primary text-[0.7rem] font-bold px-2 py-1 uppercase tracking-wider">
-                            GRATIS
-                          </span>
-                        </label>
-
-                        <label className="flex items-start gap-4 p-5 border-2 border-dark opacity-50 cursor-not-allowed bg-cream">
-                          <input
-                            type="radio"
-                            name="fulfillment"
-                            value="delivery"
-                            disabled
-                            className="mt-1.5 w-5 h-5 accent-primary"
-                          />
-                          {/* Visually hidden checkbox for styling */}
-                          <span className="sr-only">Thuislevering</span>
-                          <div>
-                            <h4 className="font-bold text-base mb-1 uppercase font-body tracking-wider text-dark">Thuislevering</h4>
-                            <p className="text-sm font-bold text-gray-600">
-                              Binnenkort beschikbaar.
+                              Brouwerij Antwerpen (na afspraak).
                             </p>
                           </div>
                         </label>
+                        <div className="opacity-50 grayscale bg-cream border-2 border-dark p-5">
+                           <h4 className="font-bold text-base mb-1 uppercase font-body tracking-wider text-dark">Verzending</h4>
+                           <p className="text-sm font-bold text-gray-600">Binnenkort.</p>
+                        </div>
                       </div>
                     </section>
 
-                    {/* Section 3: Personal Details */}
-                    <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#1C1C1C]">
-                      <div className="flex items-center mb-8 pb-4 border-b-2 border-dark">
-                        <h2 className="font-heading text-3xl text-dark flex items-center gap-3 uppercase tracking-wide">
-                          <span className="w-8 h-8 bg-primary text-dark border-2 border-dark flex items-center justify-center text-lg font-bold">
-                            3
-                          </span>
-                          Gegevens
-                        </h2>
+                    {/* Section 3: Details */}
+                    <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C]">
+                      <h2 className="font-heading text-3xl mb-8 pb-4 border-b-2 border-dark uppercase tracking-wide">3. Gegevens</h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <input type="text" placeholder="Voornaam *" required className="p-3 border-2 border-dark w-full" />
+                        <input type="text" placeholder="Achternaam *" required className="p-3 border-2 border-dark w-full" />
                       </div>
-
-                      <div className="space-y-5">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                          <div className="space-y-2">
-                            <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">Voornaam *</label>
-                            <input
-                              type="text"
-                              required
-                              value={formData.firstName}
-                              onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                              placeholder="Jan"
-                              className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">Achternaam *</label>
-                            <input
-                              type="text"
-                              required
-                              value={formData.lastName}
-                              onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                              placeholder="Janssen"
-                              className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">E-mailadres *</label>
-                          <input
-                            type="email"
-                            required
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            placeholder="jan@voorbeeld.be"
-                            className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">Telefoonnummer *</label>
-                          <input
-                            type="tel"
-                            required
-                            value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            placeholder="+32 4..."
-                            className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">
-                            Geboortedatum * <span className="lowercase text-xs font-normal opacity-80">(16+ controle)</span>
-                          </label>
-                          <div className="grid grid-cols-3 gap-2">
-                            <input
-                              type="number"
-                              required
-                              min="1"
-                              max="31"
-                              value={formData.dobDay}
-                              onChange={(e) => setFormData({ ...formData, dobDay: e.target.value })}
-                              placeholder="DD"
-                              className="text-center px-3 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
-                            />
-                            <input
-                              type="number"
-                              required
-                              min="1"
-                              max="12"
-                              value={formData.dobMonth}
-                              onChange={(e) => setFormData({ ...formData, dobMonth: e.target.value })}
-                              placeholder="MM"
-                              className="text-center px-3 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
-                            />
-                            <input
-                              type="number"
-                              required
-                              min="1900"
-                              max="2010"
-                              value={formData.dobYear}
-                              onChange={(e) => setFormData({ ...formData, dobYear: e.target.value })}
-                              placeholder="JJJJ"
-                              className="text-center px-3 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">Opmerkingen</label>
-                          <textarea
-                            value={formData.notes}
-                            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                            placeholder="Speciale wensen?"
-                            className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors resize-none"
-                            style={{ height: '80px' }}
-                            ></textarea>
-                        </div>
-                      </div>
+                      <input type="email" placeholder="E-mail *" required className="mt-5 p-3 border-2 border-dark w-full" />
                     </section>
 
                     {/* Section 4: Payment */}
-                    <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#1C1C1C]">
-                      <div className="flex items-center mb-8 pb-4 border-b-2 border-dark">
-                        <h2 className="font-heading text-3xl text-dark flex items-center gap-3 uppercase tracking-wide">
-                          <span className="w-8 h-8 bg-primary text-dark border-2 border-dark flex items-center justify-center text-lg font-bold">
-                            4
-                          </span>
-                          Betaling
-                        </h2>
-                      </div>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-                        {[
-                          { id: "bancontact", label: "Bancontact" },
-                          { id: "payconiq", label: "Payconiq" },
-                          { id: "ideal", label: "iDEAL" },
-                        ].map((method) => (
-                          <label
-                            key={method.id}
-                            className={`flex items-center justify-center gap-2 p-3 border-2 cursor-pointer transition-all ${
-                              paymentMethod === method.id
-                                ? "border-primary bg-primary/10 shadow-[4px_4px_0_#D4A017] text-dark"
-                                : "border-dark hover:-translate-y-1 hover:shadow-[4px_4px_0_#1C1C1C]"
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="payment"
-                              value={method.id}
-                              checked={paymentMethod === method.id}
-                              onChange={() => setPaymentMethod(method.id as PaymentMethod)}
-                              className="sr-only"
-                            />
-                            <span className="font-bold text-sm uppercase tracking-wider text-dark">
-                              {method.label}
-                            </span>
+                    <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C]">
+                      <h2 className="font-heading text-3xl mb-8 pb-4 border-b-2 border-dark uppercase tracking-wide">4. Betaling</h2>
+                      <div className="flex flex-wrap gap-4">
+                        {['Bancontact', 'Payconiq', 'iDeal'].map(m => (
+                          <label key={m} className="p-3 border-2 border-dark font-bold cursor-pointer hover:bg-primary/10">
+                            <input type="radio" name="payment" className="mr-2" /> {m}
                           </label>
                         ))}
-                      </div>
-
-                      <div className="space-y-3 text-sm font-body font-bold">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            required
-                            checked={acceptTerms}
-                            onChange={(e) => setAcceptTerms(e.target.checked)}
-                            className="mt-0.5 w-4 h-4 border-2 border-dark accent-primary"
-                          />
-                          <span className="text-gray-600">
-                            Ik ga akkoord met de{" "}
-                            <a href="#" className="text-primary underline hover:text-dark transition-colors">algemene voorwaarden</a>. *
-                          </span>
-                        </label>
-
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            required
-                            checked={confirmAge}
-                            onChange={(e) => setConfirmAge(e.target.checked)}
-                            className="mt-0.5 w-4 h-4 border-2 border-dark accent-primary"
-                          />
-                          <span className="text-gray-600">
-                            Ik ben 16 jaar of ouder. *
-                          </span>
-                        </label>
-
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={newsletter}
-                            onChange={(e) => setNewsletter(e.target.checked)}
-                            className="mt-0.5 w-4 h-4 border-2 border-dark accent-primary"
-                          />
-                          <span className="text-gray-600">
-                            Ik wil nieuws ontvangen (optioneel)
-                          </span>
-                        </label>
                       </div>
                     </section>
                   </div>
 
-                  {/* Right Column - Sticky Order Summary */}
-                  <aside className="lg:sticky lg:top-24 h-fit space-y-6">
-                    <div className="bg-dark text-white border-2 border-dark p-8 relative overflow-hidden shadow-[8px_8px_0_#D4A017]">
-                      <h3 className="font-heading text-3xl text-white mb-8 pb-4 border-b-2 border-dashed border-white/20 uppercase tracking-wide">
-                        Jouw Bestelling
-                      </h3>
-
-                      {/* Summary rows */}
-                      <div className="space-y-5 mb-8 font-body font-bold text-xl">
-                        <div className="flex justify-between text-white/70">
-                          <span>Artikelen ({items.reduce((acc, i) => acc + i.quantity, 0)})</span>
-                          <span className="text-white">€ {subtotal.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-white/70">
-                          <span>Levering</span>
-                          <span className="text-primary uppercase tracking-wider">GRATIS</span>
-                        </div>
-                        <div className="flex justify-between text-sm text-white/40 font-normal">
-                          <span>Waarvan BTW (21%)</span>
-                          <span>€ {((total * 0.21) / 1.21).toFixed(2)}</span>
-                        </div>
-                      </div>
-
-                      {/* Total */}
-                      <div className="flex justify-between items-center font-heading text-4xl pt-8 border-t-2 border-dashed border-white/20">
-                        <span className="text-white uppercase">TOTAAL</span>
+                  {/* Summary Aside */}
+                  <aside className="lg:sticky lg:top-24 h-fit">
+                    <div className="bg-dark text-white p-8 shadow-[8px_8px_0_#D4A017] border-2 border-dark">
+                      <h3 className="font-heading text-3xl mb-8 pb-4 border-b-2 border-dashed border-white/20">Overzicht</h3>
+                      <div className="flex justify-between font-heading text-4xl pt-8 border-t-2 border-dashed border-white/20">
+                        <span>TOTAAL</span>
                         <span className="text-primary">€ {total.toFixed(2)}</span>
                       </div>
-
-                      {/* Pay button */}
-                      <button
-                        type="submit"
-                        className="w-full mt-10 bg-primary text-dark border-2 border-dark font-heading text-xl font-bold py-4 px-6 uppercase tracking-wide hover:bg-primary/90 transition-colors shadow-[4px_4px_0_#1C1C1C] hover:shadow-[6px_6px_0_#1C1C1C] hover:-translate-y-1 transform"
-                      >
+                      <button type="submit" className="w-full mt-10 bg-primary text-dark font-heading text-xl font-bold py-4 border-2 border-dark shadow-[4px_4px_0_#1C1C1C] hover:bg-primary/90">
                         BETALEN →
                       </button>
-
-                      <p className="text-center text-sm font-body font-bold text-white/40 mt-5 uppercase tracking-widest">
-                        Veilig betalen via Mollie
-                      </p>
-                    </div>
-
-                    {/* Help box */}
-                    <div className="bg-cream border-2 border-dark p-6 text-center shadow-[4px_4px_0_#1C1C1C]">
-                      <h4 className="font-heading uppercase tracking-wide mb-2 text-dark text-lg">Hulp nodig?</h4>
-                      <a
-                        href="mailto:info@troebelbrewing.be"
-                        className="text-base font-body font-bold text-primary underline hover:text-dark transition-colors"
-                      >
-                        info@troebelbrewing.be
-                      </a>
                     </div>
                   </aside>
                 </div>
               </div>
-              </form>
+            </form>
           )}
         </div>
       </main>
