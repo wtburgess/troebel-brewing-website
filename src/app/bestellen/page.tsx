@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import ShopCard from "@/components/shop/ShopCard";
 import FloatingCartBar from "@/components/shop/FloatingCartBar";
 import { useCartStore } from "@/store/cart";
@@ -185,546 +186,574 @@ export default function BestellenPage() {
   // Loading state
   if (!mounted || beersLoading) {
     return (
-      <main className="bg-[var(--cream)] min-h-[80vh] pb-20 border-b-[3px] border-[var(--dark)]">
-        <section className="bg-[var(--dark)] text-[var(--warm-white)] py-12 text-center relative overflow-hidden mb-12 border-b-[3px] border-[var(--dark)]">
-          <div className="max-w-[1200px] mx-auto px-6">
-            <h1 className="font-[family:var(--font-d)] text-4xl md:text-6xl text-[var(--warm-white)] mb-3 uppercase tracking-wide">
-              De Webshop
-            </h1>
-            <p className="text-[var(--warm-white)]/70 max-w-xl mx-auto text-lg font-[family:var(--font-b)]">
-              Laden...
-            </p>
-          </div>
-        </section>
+      <>
+        <Header />
+        <main className="pt-[70px] dots-pattern min-h-screen">
+          {/* Page Header */}
+          <section className="bg-dark text-white py-16 md:py-24 text-center">
+            <div className="max-w-[1200px] mx-auto px-6">
+              <h1
+                className="font-heading text-4xl md:text-6xl mb-6"
+                style={{ textShadow: '4px 4px 0px #D4A017' }}
+              >
+                De Webshop
+              </h1>
+              <p className="font-body text-white/70 max-w-2xl mx-auto text-lg md:text-xl">
+                Laden...
+              </p>
+            </div>
+          </section>
 
-        <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-12">
-          <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-96 bg-[var(--dark)]/10 border-[3px] border-[var(--dark)]/20 shadow-[4px_4px_0_var(--dark)]" />
-            ))}
-          </div>
-        </div>
-      </main>
+          <section className="bg-cream py-16">
+            <div className="max-w-[1200px] mx-auto px-6">
+              <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-96 bg-dark/10 border-2 border-dark shadow-[4px_4px_0_#1C1C1C]" />
+                ))}
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </>
     );
   }
 
   const availableBeers = beers.filter((beer) => hasAvailableVariants(beer));
 
   return (
-    <main className="bg-[var(--cream)] min-h-[80vh] pb-20 border-b-[3px] border-[var(--dark)]">
-      {/* Shop Hero */}
-      <section className="bg-[var(--dark)] text-[var(--warm-white)] py-12 text-center relative overflow-hidden mb-12 border-b-[3px] border-[var(--dark)]">
+    <>
+      <Header />
+      <main className="pt-[70px] dots-pattern min-h-screen">
+        {/* Page Header */}
+        <section className="bg-dark text-white py-16 md:py-24 text-center">
+          <div className="max-w-[1200px] mx-auto px-6">
+            <h1
+              className="font-heading text-4xl md:text-6xl mb-6"
+              style={{ textShadow: '4px 4px 0px #D4A017' }}
+            >
+              De Webshop
+            </h1>
+            <p className="font-body text-white/70 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
+              Direct van de brouwerij naar jouw koelkast. Kies je favoriete bieren.
+            </p>
+          </div>
+        </section>
+
         <div className="max-w-[1200px] mx-auto px-6">
-          <h1 className="font-[family:var(--font-d)] text-4xl md:text-6xl text-[var(--warm-white)] mb-4 uppercase tracking-wide">
-            De Webshop
-          </h1>
-          <p className="text-[var(--warm-white)]/70 max-w-xl mx-auto text-xl font-[family:var(--font-b)] leading-relaxed">
-            Direct van de brouwerij naar jouw koelkast. Kies je favoriete bieren.
-          </p>
-        </div>
-      </section>
+          {/* State A: Shop Grid (empty cart or browsing) */}
+          {items.length === 0 || viewMode === "shop" ? (
+            <>
+              {/* Filter Bar */}
+              <section className="bg-cream py-12">
+                <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-dashed border-dark/20">
+                  <span className="font-body font-bold text-dark uppercase text-sm">
+                    Toont {availableBeers.length} bieren
+                  </span>
+                </div>
 
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6 pb-20">
-        {/* State A: Shop Grid (empty cart or browsing) */}
-        {items.length === 0 || viewMode === "shop" ? (
-          <>
-            {/* Filter Bar */}
-            <div className="flex justify-between items-center mb-10 pb-4 border-b-2 border-dashed border-[var(--dark)]/20">
-              <span className="text-sm font-[family:var(--font-b)] font-bold text-[var(--mid)] uppercase">
-                Toont {availableBeers.length} bieren
-              </span>
-            </div>
+                {/* Shop Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                  {availableBeers.map((beer) => (
+                    <ShopCard key={beer.id} beer={beer} />
+                  ))}
+                </div>
+              </section>
 
-            {/* Shop Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
-              {availableBeers.map((beer) => (
-                <ShopCard key={beer.id} beer={beer} />
-              ))}
-            </div>
+              {/* Floating Cart Bar (Mobile) */}
+              <FloatingCartBar onCheckout={() => setViewMode("checkout")} className="bottom-8 right-8" />
+            </>
+          ) : (
+            /* State B: Checkout Dashboard */
+            <form onSubmit={handleSubmit}>
+              <div className="max-w-[1200px] mx-auto px-6">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 lg:gap-12">
+                  {/* Left Column */}
+                  <div className="space-y-10">
+                    {/* Section 1: Cart */}
+                    <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#1C1C1C]">
+                      <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-dark">
+                        <h2 className="font-heading text-3xl text-dark flex items-center gap-3 uppercase tracking-wide">
+                          <span className="w-8 h-8 bg-primary text-dark border-2 border-dark flex items-center justify-center text-lg font-bold">
+                            1
+                          </span>
+                          Jouw Mandje
+                        </h2>
+                        <button
+                          type="button"
+                          onClick={() => setViewMode("shop")}
+                          className="font-heading uppercase text-primary hover:text-dark transition-colors flex items-center gap-2 tracking-wider text-sm font-bold"
+                        >
+                          ← Meer toevoegen
+                        </button>
+                      </div>
 
-            {/* Floating Cart Bar (Mobile) */}
-            <FloatingCartBar onCheckout={() => setViewMode("checkout")} className="bottom-8 right-8" />
-          </>
-        ) : (
-          /* State B: Checkout Dashboard */
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 lg:gap-12">
-              {/* Left Column */}
-              <div className="space-y-10">
-                {/* Section 1: Cart */}
-                <section className="bg-[var(--warm-white)] border-[3px] border-[var(--dark)] p-6 shadow-[6px_6px_0_var(--dark)] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--dark)]">
-                  <div className="flex items-center justify-between mb-8 pb-4 border-b-[3px] border-[var(--dark)]">
-                    <h2 className="font-[family:var(--font-d)] text-3xl text-[var(--dark)] flex items-center gap-3 uppercase tracking-wide">
-                      <span className="w-8 h-8 bg-[var(--troebel-gold)] text-[var(--dark)] border-2 border-[var(--dark)] flex items-center justify-center text-lg">
-                        1
-                      </span>
-                      Jouw Mandje
-                    </h2>
-                    <button
-                      type="button"
-                      onClick={() => setViewMode("shop")}
-                      className="font-[family:var(--font-d)] uppercase text-[var(--troebel-gold)] hover:text-[var(--dark)] transition-colors flex items-center gap-2 tracking-wider text-sm"
-                    >
-                      ← Meer toevoegen
-                    </button>
-                  </div>
+                      {/* Cart Items */}
+                      <div className="space-y-6">
+                        {items.map((item) => (
+                          <div
+                            key={getItemKey(item)}
+                            className="flex gap-5 items-center pb-6 border-b-2 border-dashed border-dark/20 last:border-0 last:pb-0"
+                          >
+                            <div className="w-28 h-28 bg-cream border-2 border-dark flex items-center justify-center p-2 flex-shrink-0">
+                              <div className="relative w-full h-full">
+                                <Image
+                                  src={item.beer.image}
+                                  alt={item.beer.name}
+                                  fill
+                                  className="object-contain"
+                                  sizes="112px"
+                                />
+                              </div>
+                            </div>
 
-                  {/* Cart Items */}
-                  <div className="space-y-6">
-                    {items.map((item) => (
-                      <div
-                        key={getItemKey(item)}
-                        className="flex gap-5 items-center pb-6 border-b-2 border-dashed border-[var(--dark)]/20 last:border-0 last:pb-0"
-                      >
-                        <div className="w-28 h-28 bg-[var(--cream)] border-[3px] border-[var(--dark)] flex items-center justify-center p-2 flex-shrink-0">
-                          <div className="relative w-full h-full">
-                            <Image
-                              src={item.beer.image}
-                              alt={item.beer.name}
-                              fill
-                              className="object-contain"
-                              sizes="112px"
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-heading text-2xl mb-1 uppercase tracking-wide truncate">
+                                {item.beer.name}
+                              </h4>
+                              <p className="text-base font-body text-gray-600 mb-4">
+                                {item.variant.label}
+                              </p>
+                              <div className="flex items-center gap-3">
+                                <div className="flex items-center border-2 border-dark bg-white font-heading text-xl">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      updateQuantity(
+                                        item.beer.id,
+                                        item.variant.id,
+                                        item.quantity - 1
+                                      )
+                                    }
+                                    className="w-12 h-12 text-dark hover:bg-primary transition-colors border-r-2 border-dark"
+                                  >
+                                    −
+                                  </button>
+                                  <span className="w-12 text-center font-bold">
+                                    {item.quantity}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      updateQuantity(
+                                        item.beer.id,
+                                        item.variant.id,
+                                        item.quantity + 1
+                                      )
+                                    }
+                                    className="w-12 h-12 text-dark hover:bg-primary transition-colors border-l-2 border-dark"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => removeItem(item.beer.id, item.variant.id)}
+                                  className="text-base font-body font-bold text-red-600 underline hover:text-dark transition-colors ml-2"
+                                >
+                                  Verwijder
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="font-heading text-2xl text-right">
+                              € {(item.variant.price * item.quantity).toFixed(2)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Vergeten? Upsell Section */}
+                      {upsellBeers.length > 0 && (
+                        <div className="mt-10 pt-10 border-t-2 border-dark">
+                          <h3 className="font-heading text-2xl text-dark mb-5 flex items-center gap-2 uppercase tracking-wide">
+                            <span>👀</span> Nog eentje voor de sfeer?
+                          </h3>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            {upsellBeers.map((beer) => {
+                              const availableVariants = beer.variants.filter(
+                                (v) => v.isAvailable && v.stock > 0
+                              );
+                              if (availableVariants.length === 0) return null;
+
+                              const variantTypes = [...new Set(availableVariants.map((v) => v.type))];
+                              const GetVariantIcon = ({ type }: { type: string }) => {
+                                switch (type) {
+                                  case "bottle": return <Icons.Bottle className="w-4 h-4" />;
+                                  case "crate": return <Icons.Crate className="w-4 h-4" />;
+                                  case "keg": return <Icons.Keg className="w-4 h-4" />;
+                                  default: return <Icons.Other className="w-4 h-4" />;
+                                }
+                              };
+
+                              const lowestPrice = Math.min(...availableVariants.map((v) => v.price));
+
+                              return (
+                                <button
+                                  key={beer.id}
+                                  type="button"
+                                  onClick={() => openModal(beer)}
+                                  className="flex items-center gap-4 p-4 bg-white border-2 border-dark hover:bg-primary/10 hover:-translate-y-1 hover:shadow-[4px_4px_0_#1C1C1C] transition-all group text-left relative overflow-hidden"
+                                >
+                                  <div className="w-16 h-24 relative flex-shrink-0 bg-cream border-2 border-dark p-2">
+                                    <Image
+                                      src={beer.image}
+                                      alt={beer.name}
+                                      fill
+                                      className="object-contain group-hover:scale-110 transition-transform duration-300"
+                                      sizes="64px"
+                                    />
+                                  </div>
+
+                                  <div className="flex-1 min-w-0">
+                                    <span className="font-heading text-2xl text-dark block uppercase tracking-wide truncate">
+                                      {beer.name}
+                                    </span>
+                                    <div className="flex flex-wrap gap-1 my-2">
+                                      {variantTypes.map((type) => (
+                                        <span
+                                          key={type}
+                                          className="inline-flex items-center gap-1 text-[0.7rem] px-2 py-1 bg-dark text-primary font-bold uppercase tracking-wider"
+                                        >
+                                          <GetVariantIcon type={type} />
+                                          <span>{getVariantTypeLabel(type)}</span>
+                                        </span>
+                                      ))}
+                                    </div>
+                                      <span className="text-base font-body font-bold text-primary">
+                                      Vanaf € {lowestPrice.toFixed(2)}
+                                    </span>
+                                  </div>
+
+                                  <span className="w-12 h-12 bg-dark text-primary border-2 border-dark flex items-center justify-center text-2xl font-heading group-hover:bg-primary group-hover:text-dark transition-colors flex-shrink-0">
+                                    +
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </section>
+
+                    {/* Section 2: Fulfillment */}
+                    <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#1C1C1C]">
+                      <div className="flex items-center mb-8 pb-4 border-b-2 border-dark">
+                        <h2 className="font-heading text-3xl text-dark flex items-center gap-3 uppercase tracking-wide">
+                          <span className="w-8 h-8 bg-primary text-dark border-2 border-dark flex items-center justify-center text-lg font-bold">
+                            2
+                          </span>
+                          Levering
+                        </h2>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <label
+                          className={`relative flex items-start gap-4 p-5 border-2 cursor-pointer transition-all ${
+                            fulfillment === "pickup"
+                              ? "border-primary bg-primary/10 shadow-[4px_4px_0_#D4A017] text-dark"
+                              : "border-dark hover:-translate-y-1 hover:shadow-[4px_4px_0_#1C1C1C]"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="fulfillment"
+                            value="pickup"
+                            checked={fulfillment === "pickup"}
+                            onChange={() => setFulfillment("pickup")}
+                            className="mt-1.5 w-5 h-5 accent-primary"
+                          />
+                          <div>
+                            <h4 className="font-bold text-base mb-1 uppercase font-body tracking-wider text-dark">Afhalen</h4>
+                            <p className="text-sm text-gray-600 font-bold leading-relaxed">
+                              Bij de brouwerij in Antwerpen.
+                              <br />
+                              Na afspraak.
+                            </p>
+                          </div>
+                          <span className="absolute top-3 right-3 bg-dark text-primary text-[0.7rem] font-bold px-2 py-1 uppercase tracking-wider">
+                            GRATIS
+                          </span>
+                        </label>
+
+                        <label className="flex items-start gap-4 p-5 border-2 border-dark opacity-50 cursor-not-allowed bg-cream">
+                          <input
+                            type="radio"
+                            name="fulfillment"
+                            value="delivery"
+                            disabled
+                            className="mt-1.5 w-5 h-5 accent-primary"
+                          />
+                          {/* Visually hidden checkbox for styling */}
+                          <span className="sr-only">Thuislevering</span>
+                          <div>
+                            <h4 className="font-bold text-base mb-1 uppercase font-body tracking-wider text-dark">Thuislevering</h4>
+                            <p className="text-sm font-bold text-gray-600">
+                              Binnenkort beschikbaar.
+                            </p>
+                          </div>
+                        </label>
+                      </div>
+                    </section>
+
+                    {/* Section 3: Personal Details */}
+                    <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#1C1C1C]">
+                      <div className="flex items-center mb-8 pb-4 border-b-2 border-dark">
+                        <h2 className="font-heading text-3xl text-dark flex items-center gap-3 uppercase tracking-wide">
+                          <span className="w-8 h-8 bg-primary text-dark border-2 border-dark flex items-center justify-center text-lg font-bold">
+                            3
+                          </span>
+                          Gegevens
+                        </h2>
+                      </div>
+
+                      <div className="space-y-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                          <div className="space-y-2">
+                            <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">Voornaam *</label>
+                            <input
+                              type="text"
+                              required
+                              value={formData.firstName}
+                              onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                              placeholder="Jan"
+                              className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">Achternaam *</label>
+                            <input
+                              type="text"
+                              required
+                              value={formData.lastName}
+                              onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                              placeholder="Janssen"
+                              className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
                             />
                           </div>
                         </div>
 
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-[family:var(--font-d)] text-2xl mb-1 uppercase tracking-wide truncate">
-                            {item.beer.name}
-                          </h4>
-                          <p className="text-base font-[family:var(--font-b)] text-[var(--mid)] mb-4">
-                            {item.variant.label}
-                          </p>
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center border-[3px] border-[var(--dark)] bg-[var(--warm-white)] font-[family:var(--font-d)] text-xl">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  updateQuantity(
-                                    item.beer.id,
-                                    item.variant.id,
-                                    item.quantity - 1
-                                  )
-                                }
-                                className="w-12 h-12 text-[var(--dark)] hover:bg-[var(--troebel-gold)] transition-colors border-r-[3px] border-[var(--dark)]"
-                              >
-                                −
-                              </button>
-                              <span className="w-12 text-center font-bold">
-                                {item.quantity}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  updateQuantity(
-                                    item.beer.id,
-                                    item.variant.id,
-                                    item.quantity + 1
-                                  )
-                                }
-                                className="w-12 h-12 text-[var(--dark)] hover:bg-[var(--troebel-gold)] transition-colors border-l-[3px] border-[var(--dark)]"
-                              >
-                                +
-                              </button>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => removeItem(item.beer.id, item.variant.id)}
-                              className="text-base font-[family:var(--font-b)] font-bold text-[var(--frambo-burg)] underline hover:text-[var(--dark)] transition-colors ml-2"
-                            >
-                              Verwijder
-                            </button>
+                        <div className="space-y-2">
+                          <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">E-mailadres *</label>
+                          <input
+                            type="email"
+                            required
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            placeholder="jan@voorbeeld.be"
+                            className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">Telefoonnummer *</label>
+                          <input
+                            type="tel"
+                            required
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            placeholder="+32 4..."
+                            className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">
+                            Geboortedatum * <span className="lowercase text-xs font-normal opacity-80">(16+ controle)</span>
+                          </label>
+                          <div className="grid grid-cols-3 gap-2">
+                            <input
+                              type="number"
+                              required
+                              min="1"
+                              max="31"
+                              value={formData.dobDay}
+                              onChange={(e) => setFormData({ ...formData, dobDay: e.target.value })}
+                              placeholder="DD"
+                              className="text-center px-3 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
+                            />
+                            <input
+                              type="number"
+                              required
+                              min="1"
+                              max="12"
+                              value={formData.dobMonth}
+                              onChange={(e) => setFormData({ ...formData, dobMonth: e.target.value })}
+                              placeholder="MM"
+                              className="text-center px-3 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
+                            />
+                            <input
+                              type="number"
+                              required
+                              min="1900"
+                              max="2010"
+                              value={formData.dobYear}
+                              onChange={(e) => setFormData({ ...formData, dobYear: e.target.value })}
+                              placeholder="JJJJ"
+                              className="text-center px-3 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
+                            />
                           </div>
                         </div>
 
-                        <div className="font-[family:var(--font-d)] text-2xl text-right">
-                          € {(item.variant.price * item.quantity).toFixed(2)}
+                        <div className="space-y-2">
+                          <label className="block text-sm font-body font-bold text-dark uppercase tracking-wider">Opmerkingen</label>
+                          <textarea
+                            value={formData.notes}
+                            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                            placeholder="Speciale wensen?"
+                            className="w-full px-4 py-3 border-2 border-dark bg-white font-body text-dark placeholder-gray-400 focus:outline-none focus:border-primary transition-colors resize-none"
+                            style={{ height: '80px' }}
+                          />
                         </div>
                       </div>
-                    ))}
+                    </section>
+
+                    {/* Section 4: Payment */}
+                    <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#1C1C1C]">
+                      <div className="flex items-center mb-8 pb-4 border-b-2 border-dark">
+                        <h2 className="font-heading text-3xl text-dark flex items-center gap-3 uppercase tracking-wide">
+                          <span className="w-8 h-8 bg-primary text-dark border-2 border-dark flex items-center justify-center text-lg font-bold">
+                            4
+                          </span>
+                          Betaling
+                        </h2>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                        {[
+                          { id: "bancontact", label: "Bancontact" },
+                          { id: "payconiq", label: "Payconiq" },
+                          { id: "ideal", label: "iDEAL" },
+                        ].map((method) => (
+                          <label
+                            key={method.id}
+                            className={`flex items-center justify-center gap-2 p-3 border-2 cursor-pointer transition-all ${
+                              paymentMethod === method.id
+                                ? "border-primary bg-primary/10 shadow-[4px_4px_0_#D4A017] text-dark"
+                                : "border-dark hover:-translate-y-1 hover:shadow-[4px_4px_0_#1C1C1C]"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="payment"
+                              value={method.id}
+                              checked={paymentMethod === method.id}
+                              onChange={() => setPaymentMethod(method.id as PaymentMethod)}
+                              className="sr-only"
+                            />
+                            <span className="font-bold text-sm uppercase tracking-wider text-dark">
+                              {method.label}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+
+                      <div className="space-y-3 text-sm font-body font-bold">
+                        <label className="flex items-start gap-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            required
+                            checked={acceptTerms}
+                            onChange={(e) => setAcceptTerms(e.target.checked)}
+                            className="mt-0.5 w-4 h-4 border-2 border-dark accent-primary"
+                          />
+                          <span className="text-gray-600">
+                            Ik ga akkoord met de{" "}
+                            <a href="#" className="text-primary underline hover:text-dark transition-colors">algemene voorwaarden</a>. *
+                          </span>
+                        </label>
+
+                        <label className="flex items-start gap-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            required
+                            checked={confirmAge}
+                            onChange={(e) => setConfirmAge(e.target.checked)}
+                            className="mt-0.5 w-4 h-4 border-2 border-dark accent-primary"
+                          />
+                          <span className="text-gray-600">
+                            Ik ben 16 jaar of ouder. *
+                          </span>
+                        </label>
+
+                        <label className="flex items-start gap-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={newsletter}
+                            onChange={(e) => setNewsletter(e.target.checked)}
+                            className="mt-0.5 w-4 h-4 border-2 border-dark accent-primary"
+                          />
+                          <span className="text-gray-600">
+                            Ik wil nieuws ontvangen (optioneel)
+                          </span>
+                        </label>
+                      </div>
+                    </section>
                   </div>
 
-                  {/* Vergeten? Upsell Section */}
-                  {upsellBeers.length > 0 && (
-                    <div className="mt-10 pt-10 border-t-[3px] border-[var(--dark)]">
-                      <h3 className="font-[family:var(--font-d)] text-2xl text-[var(--dark)] mb-5 flex items-center gap-2 uppercase tracking-wide">
-                        <span>👀</span> Nog eentje voor de sfeer?
+                  {/* Right Column - Sticky Order Summary */}
+                  <aside className="lg:sticky lg:top-24 h-fit space-y-6">
+                    <div className="bg-dark text-white border-2 border-dark p-8 relative overflow-hidden shadow-[8px_8px_0_#D4A017]">
+                      <h3 className="font-heading text-3xl text-white mb-8 pb-4 border-b-2 border-dashed border-white/20 uppercase tracking-wide">
+                        Jouw Bestelling
                       </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        {upsellBeers.map((beer) => {
-                          const availableVariants = beer.variants.filter(
-                            (v) => v.isAvailable && v.stock > 0
-                          );
-                          if (availableVariants.length === 0) return null;
 
-                          const variantTypes = [...new Set(availableVariants.map((v) => v.type))];
-                          const GetVariantIcon = ({ type }: { type: string }) => {
-                            switch (type) {
-                              case "bottle": return <Icons.Bottle className="w-4 h-4" />;
-                              case "crate": return <Icons.Crate className="w-4 h-4" />;
-                              case "keg": return <Icons.Keg className="w-4 h-4" />;
-                              default: return <Icons.Other className="w-4 h-4" />;
-                            }
-                          };
-
-                          const lowestPrice = Math.min(...availableVariants.map((v) => v.price));
-
-                          return (
-                            <button
-                              key={beer.id}
-                              type="button"
-                              onClick={() => openModal(beer)}
-                              className="flex items-center gap-4 p-4 bg-[var(--warm-white)] border-[3px] border-[var(--dark)] hover:bg-[var(--troebel-gold)]/10 hover:-translate-y-1 hover:shadow-[4px_4px_0_var(--dark)] transition-all group text-left relative overflow-hidden"
-                            >
-                              <div className="w-16 h-24 relative flex-shrink-0 bg-[var(--cream)] border-2 border-[var(--dark)] p-2">
-                                <Image
-                                  src={beer.image}
-                                  alt={beer.name}
-                                  fill
-                                  className="object-contain group-hover:scale-110 transition-transform duration-300"
-                                  sizes="64px"
-                                />
-                              </div>
-
-                              <div className="flex-1 min-w-0">
-                                <span className="font-[family:var(--font-d)] text-2xl text-[var(--dark)] block uppercase tracking-wide truncate">
-                                  {beer.name}
-                                </span>
-                                <div className="flex flex-wrap gap-1 my-2">
-                                  {variantTypes.map((type) => (
-                                    <span
-                                      key={type}
-                                      className="inline-flex items-center gap-1 text-[0.7rem] px-2 py-1 bg-[var(--dark)] text-[var(--troebel-gold)] font-bold uppercase tracking-wider"
-                                    >
-                                      <GetVariantIcon type={type} />
-                                      <span>{getVariantTypeLabel(type)}</span>
-                                    </span>
-                                  ))}
-                                </div>
-                                  <span className="text-base font-[family:var(--font-b)] font-bold text-[var(--troebel-gold)]">
-                                  Vanaf € {lowestPrice.toFixed(2)}
-                                </span>
-                              </div>
-
-                              <span className="w-12 h-12 bg-[var(--dark)] text-[var(--troebel-gold)] border-[3px] border-[var(--dark)] flex items-center justify-center text-2xl font-[family:var(--font-d)] group-hover:bg-[var(--troebel-gold)] group-hover:text-[var(--dark)] transition-colors flex-shrink-0">
-                                +
-                              </span>
-                            </button>
-                          );
-                        })}
+                      {/* Summary rows */}
+                      <div className="space-y-5 mb-8 font-body font-bold text-xl">
+                        <div className="flex justify-between text-white/70">
+                          <span>Artikelen ({items.reduce((acc, i) => acc + i.quantity, 0)})</span>
+                          <span className="text-white">€ {subtotal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-white/70">
+                          <span>Levering</span>
+                          <span className="text-primary uppercase tracking-wider">GRATIS</span>
+                        </div>
+                        <div className="flex justify-between text-sm text-white/40 font-normal">
+                          <span>Waarvan BTW (21%)</span>
+                          <span>€ {((total * 0.21) / 1.21).toFixed(2)}</span>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </section>
 
-                {/* Section 2: Fulfillment */}
-                <section className="bg-[var(--warm-white)] border-[3px] border-[var(--dark)] p-6 shadow-[6px_6px_0_var(--dark)] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--dark)]">
-                  <div className="flex items-center mb-8 pb-4 border-b-[3px] border-[var(--dark)]">
-                    <h2 className="font-[family:var(--font-d)] text-3xl text-[var(--dark)] flex items-center gap-3 uppercase tracking-wide">
-                      <span className="w-8 h-8 bg-[var(--troebel-gold)] text-[var(--dark)] border-2 border-[var(--dark)] flex items-center justify-center text-lg">
-                        2
-                      </span>
-                      Levering
-                    </h2>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <label
-                      className={`relative flex items-start gap-4 p-5 border-[3px] cursor-pointer transition-all ${
-                        fulfillment === "pickup"
-                          ? "border-[var(--troebel-gold)] bg-[var(--troebel-gold)]/10 shadow-[4px_4px_0_var(--troebel-gold)]"
-                          : "border-[var(--dark)] hover:-translate-y-1 hover:shadow-[4px_4px_0_var(--dark)]"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="fulfillment"
-                        value="pickup"
-                        checked={fulfillment === "pickup"}
-                        onChange={() => setFulfillment("pickup")}
-                        className="mt-1.5 w-5 h-5 accent-[var(--troebel-gold)]"
-                      />
-                      <div>
-                        <h4 className="font-bold text-base mb-1 uppercase font-[family:var(--font-b)] tracking-wider text-[var(--dark)]">Afhalen</h4>
-                        <p className="text-sm text-[var(--mid)] font-bold leading-relaxed">
-                          Bij de brouwerij in Antwerpen.
-                          <br />
-                          Na afspraak.
-                        </p>
+                      {/* Total */}
+                      <div className="flex justify-between items-center font-heading text-4xl pt-8 border-t-2 border-dashed border-white/20">
+                        <span className="text-white uppercase">TOTAAL</span>
+                        <span className="text-primary">€ {total.toFixed(2)}</span>
                       </div>
-                      <span className="absolute top-3 right-3 bg-[var(--dark)] text-[var(--troebel-gold)] text-[0.7rem] font-bold px-2 py-1 uppercase tracking-wider">
-                        GRATIS
-                      </span>
-                    </label>
 
-                    <label className="flex items-start gap-4 p-5 border-[3px] border-[var(--dark)] opacity-50 cursor-not-allowed bg-[var(--cream)]">
-                      <input
-                        type="radio"
-                        name="fulfillment"
-                        value="delivery"
-                        disabled
-                        className="mt-1.5 w-5 h-5 accent-[var(--troebel-gold)]"
-                      />
-                      {/* Visually hidden checkbox for styling */}
-                      <span className="sr-only">Thuislevering</span>
-                      <div>
-                        <h4 className="font-bold text-base mb-1 uppercase font-[family:var(--font-b)] tracking-wider text-[var(--dark)]">Thuislevering</h4>
-                        <p className="text-sm font-bold text-[var(--mid)]">
-                          Binnenkort beschikbaar.
-                        </p>
-                      </div>
-                    </label>
-                  </div>
-                </section>
-
-                {/* Section 3: Personal Details */}
-                <section className="bg-[var(--warm-white)] border-[3px] border-[var(--dark)] p-6 shadow-[6px_6px_0_var(--dark)] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--dark)] contact-form">
-                  <div className="flex items-center mb-8 pb-4 border-b-[3px] border-[var(--dark)]">
-                    <h2 className="font-[family:var(--font-d)] text-3xl text-[var(--dark)] flex items-center gap-3 uppercase tracking-wide">
-                      <span className="w-8 h-8 bg-[var(--troebel-gold)] text-[var(--dark)] border-2 border-[var(--dark)] flex items-center justify-center text-lg">
-                        3
-                      </span>
-                      Gegevens
-                    </h2>
-                  </div>
-
-                  <div className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div className="form-row">
-                        <label>Voornaam *</label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.firstName}
-                          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                          placeholder="Jan"
-                        />
-                      </div>
-                      <div className="form-row">
-                        <label>Achternaam *</label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.lastName}
-                          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                          placeholder="Janssen"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row">
-                      <label>E-mailadres *</label>
-                      <input
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="jan@voorbeeld.be"
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <label>Telefoonnummer *</label>
-                      <input
-                        type="tel"
-                        required
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        placeholder="+32 4..."
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <label>
-                        Geboortedatum * <span className="lowercase text-xs font-normal opacity-80">(16+ controle)</span>
-                      </label>
-                      <div className="grid grid-cols-3 gap-2">
-                        <input
-                          type="number"
-                          required
-                          min="1"
-                          max="31"
-                          value={formData.dobDay}
-                          onChange={(e) => setFormData({ ...formData, dobDay: e.target.value })}
-                          placeholder="DD"
-                          className="text-center"
-                        />
-                        <input
-                          type="number"
-                          required
-                          min="1"
-                          max="12"
-                          value={formData.dobMonth}
-                          onChange={(e) => setFormData({ ...formData, dobMonth: e.target.value })}
-                          placeholder="MM"
-                          className="text-center"
-                        />
-                        <input
-                          type="number"
-                          required
-                          min="1900"
-                          max="2010"
-                          value={formData.dobYear}
-                          onChange={(e) => setFormData({ ...formData, dobYear: e.target.value })}
-                          placeholder="JJJJ"
-                          className="text-center"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row">
-                      <label>Opmerkingen</label>
-                      <textarea
-                        value={formData.notes}
-                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                        placeholder="Speciale wensen?"
-                        style={{ height: '80px' }}
-                      />
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 4: Payment */}
-                <section className="bg-[var(--warm-white)] border-[3px] border-[var(--dark)] p-6 shadow-[6px_6px_0_var(--dark)] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--dark)]">
-                  <div className="flex items-center mb-8 pb-4 border-b-[3px] border-[var(--dark)]">
-                    <h2 className="font-[family:var(--font-d)] text-3xl text-[var(--dark)] flex items-center gap-3 uppercase tracking-wide">
-                      <span className="w-8 h-8 bg-[var(--troebel-gold)] text-[var(--dark)] border-2 border-[var(--dark)] flex items-center justify-center text-lg">
-                        4
-                      </span>
-                      Betaling
-                    </h2>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-                    {[
-                      { id: "bancontact", label: "Bancontact" },
-                      { id: "payconiq", label: "Payconiq" },
-                      { id: "ideal", label: "iDEAL" },
-                    ].map((method) => (
-                      <label
-                        key={method.id}
-                        className={`flex items-center justify-center gap-2 p-3 border-[3px] cursor-pointer transition-all ${
-                          paymentMethod === method.id
-                            ? "border-[var(--troebel-gold)] bg-[var(--troebel-gold)]/10 shadow-[4px_4px_0_var(--troebel-gold)] text-[var(--dark)]"
-                            : "border-[var(--dark)] hover:-translate-y-1 hover:shadow-[4px_4px_0_var(--dark)]"
-                        }`}
+                      {/* Pay button */}
+                      <button
+                        type="submit"
+                        className="w-full mt-10 bg-primary text-dark border-2 border-dark font-heading text-xl font-bold py-4 px-6 uppercase tracking-wide hover:bg-primary/90 transition-colors shadow-[4px_4px_0_#1C1C1C] hover:shadow-[6px_6px_0_#1C1C1C] hover:-translate-y-1 transform"
                       >
-                        <input
-                          type="radio"
-                          name="payment"
-                          value={method.id}
-                          checked={paymentMethod === method.id}
-                          onChange={() => setPaymentMethod(method.id as PaymentMethod)}
-                          className="sr-only"
-                        />
-                        <span className="font-bold text-sm uppercase tracking-wider text-[var(--dark)]">
-                          {method.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
+                        BETALEN →
+                      </button>
 
-                  <div className="space-y-3 text-sm font-bold font-[family:var(--font-b)]">
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        required
-                        checked={acceptTerms}
-                        onChange={(e) => setAcceptTerms(e.target.checked)}
-                        className="mt-0.5 w-4 h-4 border-2 border-[var(--dark)]"
-                      />{/* Checkbox is styled by globals.css */}
-                      <span className="text-[var(--mid)]">
-                        Ik ga akkoord met de{" "}
-                        <a href="#" className="text-[var(--troebel-gold)] underline">algemene voorwaarden</a>. *
-                      </span>
-                    </label>
-
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        required
-                        checked={confirmAge}
-                        onChange={(e) => setConfirmAge(e.target.checked)}
-                        className="mt-0.5 w-4 h-4 border-2 border-[var(--dark)]"
-                      />{/* Checkbox is styled by globals.css */}
-                      <span className="text-[var(--mid)]">
-                        Ik ben 16 jaar of ouder. *
-                      </span>
-                    </label>
-
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={newsletter}
-                        onChange={(e) => setNewsletter(e.target.checked)}
-                        className="mt-0.5 w-4 h-4 border-2 border-[var(--dark)]"
-                      />{/* Checkbox is styled by globals.css */}
-                      <span className="text-[var(--mid)]">
-                        Ik wil nieuws ontvangen (optioneel)
-                      </span>
-                    </label>
-                  </div>
-                </section>
-              </div>
-
-              {/* Right Column - Sticky Order Summary */}
-              <aside className="lg:sticky lg:top-24 h-fit space-y-6">
-                <div className="bg-[var(--dark)] text-[var(--warm-white)] border-[3px] border-[var(--dark)] p-8 relative overflow-hidden shadow-[8px_8px_0_var(--troebel-gold)]">
-                  <h3 className="font-[family:var(--font-d)] text-3xl text-[var(--warm-white)] mb-8 pb-4 border-b-2 border-dashed border-[var(--warm-white)]/20 uppercase tracking-wide">
-                    Jouw Bestelling
-                  </h3>
-
-                  {/* Summary rows */}
-                  <div className="space-y-5 mb-8 font-[family:var(--font-b)] font-bold text-xl">
-                    <div className="flex justify-between text-[var(--warm-white)]/70">
-                      <span>Artikelen ({items.reduce((acc, i) => acc + i.quantity, 0)})</span>
-                      <span className="text-[var(--warm-white)]">€ {subtotal.toFixed(2)}</span>
+                      <p className="text-center text-sm font-body font-bold text-white/40 mt-5 uppercase tracking-widest">
+                        Veilig betalen via Mollie
+                      </p>
                     </div>
-                    <div className="flex justify-between text-[var(--warm-white)]/70">
-                      <span>Levering</span>
-                      <span className="text-[var(--troebel-gold)] uppercase tracking-wider">GRATIS</span>
+
+                    {/* Help box */}
+                    <div className="bg-cream border-2 border-dark p-6 text-center shadow-[4px_4px_0_#1C1C1C]">
+                      <h4 className="font-heading uppercase tracking-wide mb-2 text-dark text-lg">Hulp nodig?</h4>
+                      <a
+                        href="mailto:info@troebelbrewing.be"
+                        className="text-base font-body font-bold text-primary underline hover:text-dark transition-colors"
+                      >
+                        info@troebelbrewing.be
+                      </a>
                     </div>
-                    <div className="flex justify-between text-sm text-[var(--warm-white)]/40 font-normal">
-                      <span>Waarvan BTW (21%)</span>{/* BTW calculation is for display only */}
-                      <span>€ {((total * 0.21) / 1.21).toFixed(2)}</span>
-                    </div>
-                  </div>
-
-                  {/* Total */}
-                  <div className="flex justify-between items-center font-[family:var(--font-d)] text-4xl pt-8 border-t-2 border-dashed border-[var(--warm-white)]/20">
-                    <span className="text-[var(--warm-white)] uppercase">TOTAAL</span>
-                    <span className="text-[var(--troebel-gold)]">€ {total.toFixed(2)}</span>
-                  </div>
-
-                  {/* Pay button */}
-                  <button
-                    type="submit"
-                    className="submit-btn mt-10"
-                    style={{ width: '100%', fontSize: '1.6rem', padding: '1.4rem', transform: 'skew(-4deg)' }}
-                  >
-                    BETALEN →
-                  </button>
-
-                  <p className="text-center text-sm font-bold text-[var(--warm-white)]/40 mt-5 uppercase tracking-widest">
-                    Veilig betalen via Mollie
-                  </p>
+                  </aside>
                 </div>
-
-                {/* Help box - Adjusted padding and text sizes */}
-                <div className="bg-[var(--cream)] border-[3px] border-[var(--dark)] p-6 text-center shadow-[4px_4px_0_var(--dark)]">
-                  <h4 className="font-[family:var(--font-d)] uppercase tracking-wide mb-2 text-[var(--dark)] text-lg">Hulp nodig?</h4>
-                  <a
-                    href="mailto:info@troebelbrewing.be"
-                    className="text-base font-bold text-[var(--troebel-gold)] underline hover:text-[var(--dark)] transition-colors"
-                  >
-                    info@troebelbrewing.be
-                  </a>
-                </div>
-              </aside>
-            </div>
-          </form>
-        )}
-      </div>
-    </main>
+              </form>
+            </>
+          ) : (
+            /* Empty state - just close the divs */
+            <></>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
