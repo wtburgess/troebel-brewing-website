@@ -33,6 +33,7 @@ export interface BeerVariant {
   label: string;          // "Flesje 33cl", "Bak 24 stuks", "Vat 20L"
   price: number;
   stock: number;
+  volumeMl: number;
   isAvailable: boolean;
   sortOrder: number;
 }
