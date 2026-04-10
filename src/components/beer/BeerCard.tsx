@@ -15,6 +15,16 @@ export default function BeerCard({ beer }: BeerCardProps) {
   const lowestPrice = getLowestPrice(beer);
   const isAvailable = hasAvailableVariants(beer);
 
+  // Determine beer class for styling
+  const getBeerClass = () => {
+    if (beer.slug.includes('renbier') || beer.name.includes('RENBIER')) return 'ren';
+    if (beer.slug.includes('frambo') || beer.name.includes('FRAMBO')) return 'frambo';
+    if (beer.slug.includes('brews') || beer.name.includes('BREWS')) return 'brews';
+    return '';
+  };
+
+  const beerClass = getBeerClass();
+
   // Determine badge color based on ABV
   const getBadgeStyle = () => {
     if (beer.abv >= 8) return { background: '#cc3333', color: 'white' }; // Red for high ABV
@@ -26,7 +36,7 @@ export default function BeerCard({ beer }: BeerCardProps) {
   const badgeStyle = getBadgeStyle();
 
   return (
-    <article className="card-eticket group">
+    <article className={`card-eticket group ${beerClass}`}>
       {/* Seasonal Ribbon */}
       {beer.isLimited && (
         <div className="ribbon-seasonal">SEASONAL</div>
