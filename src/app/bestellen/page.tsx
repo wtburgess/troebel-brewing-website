@@ -56,7 +56,7 @@ const STATIC_BEERS: Beer[] = [
     isFeatured: true,
     displayOrder: 1,
     variants: [
-      { id: "ren-bottle", beerId: "renbier-static", type: "bottle", size: "33cl", label: "Fles 33cl", price: 3.50, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 },
+      { id: "ren-bottle", beerId: "renbier-static", type: "bottle", size: "33cl", label: "Flesje 33cl", price: 3.50, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 },
       { id: "ren-crate", beerId: "renbier-static", type: "crate", size: "24x33cl", label: "Bak (24 x 33cl)", price: 75.00, stock: 20, volumeMl: 7920, isAvailable: true, sortOrder: 2 }
     ]
   },
@@ -75,7 +75,7 @@ const STATIC_BEERS: Beer[] = [
     isFeatured: true,
     displayOrder: 2,
     variants: [
-      { id: "fra-bottle", beerId: "frambo-static", type: "bottle", size: "33cl", label: "Fles 33cl", price: 3.80, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 }
+      { id: "fra-bottle", beerId: "frambo-static", type: "bottle", size: "33cl", label: "Flesje 33cl", price: 3.80, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 }
     ]
   },
   {
@@ -93,7 +93,7 @@ const STATIC_BEERS: Beer[] = [
     isFeatured: true,
     displayOrder: 3,
     variants: [
-      { id: "brews-bottle", beerId: "brews-static", type: "bottle", size: "33cl", label: "Fles 33cl", price: 3.20, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 },
+      { id: "brews-bottle", beerId: "brews-static", type: "bottle", size: "33cl", label: "Flesje 33cl", price: 3.20, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 },
       { id: "brews-keg", beerId: "brews-static", type: "keg", size: "20L", label: "Vat 20L", price: 110.00, stock: 5, volumeMl: 20000, isAvailable: true, sortOrder: 2 }
     ]
   }
