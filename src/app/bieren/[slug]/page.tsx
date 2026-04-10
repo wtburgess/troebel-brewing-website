@@ -1,38 +1,67 @@
 import { notFound } from "next/navigation";
-import { getBeerBySlug, getAllBeers, getAllBeerSlugs } from "@/lib/api/beers";
-import { hasAvailableVariants } from "@/types/beer";
+import { Metadata } from "next";
+import { getAllBeers } from "@/lib/api/beers";
 import BeerDetailClient from "@/components/beer/BeerDetailClient";
 
-// Revalidate every 60 seconds for ISR
-export const revalidate = 60;
-
-// Generate static paths for all beers at build time
-export async function generateStaticParams() {
-  const slugs = await getAllBeerSlugs();
-  return slugs.map((slug) => ({
-    slug,
-  }));
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
 }
 
-export default async function BeerDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const beer = await getBeerBySlug(slug);
+  const beers = await getAllBeers();
+  const beer = beers.find((b) => b.slug === slug);
 
+  if (!beer) {
+    return {
+      title: "Bier niet gevonden | Troebel Brewing",
+    };
+  }
+
+  return {
+    title: `${beer.name} - ${beer.style} | Troebel Brewing`,
+    description: beer.description,
+  };
+}
+
+export async function generateStaticParams() {
+  try {
+    const beers = await getAllBeers();
+    return beers.map((beer) => ({
+      slug: beer.slug,
+    }));
+  } catch (error) {
+    return [];
+  }
+}
+
+export default async function BeerDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  let beers = [];
+  
+  try {
+    beers = await getAllBeers();
+  } catch (error) {
+    console.error("Failed to fetch beers", error);
+  }
+  
+  const beer = beers.find((b) => b.slug === slug);
+  
   if (!beer) {
     notFound();
   }
 
-  // Get all beers for related beers section
-  const allBeers = await getAllBeers();
-
-  // Get related beers (excluding current, only available ones)
-  const relatedBeers = allBeers
-    .filter((b) => b.id !== beer.id && hasAvailableVariants(b))
+  // Get up to 3 related beers to show at the bottom
+  const relatedBeers = beers
+    .filter((b) => b.id !== beer.id && b.category === beer.category)
     .slice(0, 3);
+    
+  if (relatedBeers.length < 3) {
+    const additionalBeers = beers.filter((b) => b.id !== beer.id && !relatedBeers.find((r) => r.id === b.id));
+    relatedBeers.push(...additionalBeers.slice(0, 3 - relatedBeers.length));
+  }
 
   return <BeerDetailClient beer={beer} relatedBeers={relatedBeers} />;
 }

@@ -99,8 +99,13 @@ img { display: block; max-width: 100%; }
 .beer-card.frambo .beer-btn { background: var(--frambo-burg); color: var(--frambo-pink); border-color: var(--frambo-burg); }
 .beer-card.frambo .beer-btn:hover { background: var(--dark); color: var(--frambo-pink); }
 
+.beer-card.brews { background: #fed3a6; border-color: #dc5b26; }
+.beer-card.brews .beer-img { background: #fed3a6; border-bottom-color: #dc5b26; }
 .beer-card.brews .beer-body { background: #fed3a6; color: #dc5b26; }
-.beer-card.brews .beer-abv { background: #dc5b26; color: #fed3a6; }
+.beer-card.brews .beer-name { color: #dc5b26; }
+.beer-card.brews .beer-style { color: #dc5b26; }
+.beer-card.brews .beer-desc { color: #b84a1e; }
+.beer-card.brews .beer-abv { background: #dc5b26; color: #fed3a6; border-color: #dc5b26; }
 .beer-card.brews .beer-btn { background: #dc5b26; color: #fed3a6; border-color: #dc5b26; }
 .beer-card.brews .beer-btn:hover { background: #fed3a6; color: #dc5b26; }
 

@@ -58,7 +58,7 @@ export default function BeerCard({ beer }: BeerCardProps) {
 
       {/* Image Container */}
       <Link href={`/bieren/${beer.slug}`} className="block">
-        <div className="bg-gray-100 h-[320px] md:h-[350px] border-b-4 border-dark mb-4 overflow-hidden flex items-center justify-center">
+        <div className={`h-[320px] md:h-[350px] border-b-4 mb-4 overflow-hidden flex items-center justify-center ${isBrews ? 'bg-[#fed3a6] border-[#dc5b26]' : 'bg-gray-100 border-dark'}`}>
           <Image
             src={beer.image}
             alt={beer.name}

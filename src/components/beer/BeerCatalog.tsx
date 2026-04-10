@@ -39,7 +39,7 @@ export default function BeerCatalog({ beers }: BeerCatalogProps) {
         <section className="text-center px-6 py-12 md:py-16">
           <h1
             className="text-4xl md:text-[4rem] text-dark mb-4"
-            style={{ textShadow: '4px 4px 0px var(--color-yellow)' }}
+            style={{ textShadow: '4px 4px 0px var(--troebel-gold)' }}
           >
             De Line-up
           </h1>
@@ -62,7 +62,7 @@ export default function BeerCatalog({ beers }: BeerCatalogProps) {
                   onClick={() => setActiveCategory(category.id)}
                   className={`px-6 py-3 font-heading text-base uppercase border-[3px] border-dark transition-all duration-200 ${
                     activeCategory === category.id
-                      ? "bg-dark text-yellow shadow-[4px_4px_0px_var(--color-yellow)]"
+                      ? "bg-dark text-[#D4961A] shadow-[4px_4px_0px_var(--troebel-gold)]"
                       : "bg-white text-dark hover:bg-yellow"
                   }`}
                 >
@@ -90,7 +90,7 @@ export default function BeerCatalog({ beers }: BeerCatalogProps) {
             {/* Mixed Pack Card */}
             <div
               className="bg-white border-4 border-dark p-6 md:p-8 mt-16 flex flex-col md:flex-row items-center justify-between gap-6"
-              style={{ boxShadow: '8px 8px 0px var(--color-yellow)' }}
+              style={{ boxShadow: '8px 8px 0px var(--troebel-gold)' }}
             >
               <div>
                 <h3 className="text-2xl md:text-3xl font-heading text-dark mb-2">

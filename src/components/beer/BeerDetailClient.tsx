@@ -1,14 +1,108 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BeerCard from "@/components/beer/BeerCard";
+import ShopCard from "@/components/shop/ShopCard";
+import FloatingCartBar from "@/components/shop/FloatingCartBar";
 import { Beer, BeerVariant, hasAvailableVariants } from "@/types/beer";
 import { useCartStore } from "@/store/cart";
+import { useModalStore } from "@/store/modal";
 import { useToastStore } from "@/store/toast";
+import { getAllBeers } from "@/lib/api/beers";
+
+// Icons for variants
+const Icons = {
+  Bottle: ({ className }: { className?: string }) => (
+    <svg className={className} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 21h8a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3V3h-2v4H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" />
+      <line x1="12" y1="9" x2="12" y2="21" />
+    </svg>
+  ),
+  Crate: ({ className }: { className?: string }) => (
+    <svg className={className} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6h18" /><path d="M3 10h18" />
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <path d="M8 14h8" />
+    </svg>
+  ),
+  Keg: ({ className }: { className?: string }) => (
+    <svg className={className} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 6v12" /><path d="M19 6v12" />
+      <path d="M12 6c4.42 0 8-1.34 8-3s-3.58-3-8-3-8 1.34-8 3 3.58 3 8 3z" />
+      <path d="M12 21c4.42 0 8-1.34 8-3" />
+      <path d="M4 18c0 1.66 3.58 3 8 3" />
+    </svg>
+  ),
+  Other: ({ className }: { className?: string }) => (
+    <svg className={className} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" />
+    </svg>
+  )
+};
+
+// Temporary Static Data to bypass PocketBase
+const STATIC_BEERS: Beer[] = [
+  {
+    id: "renbier-static",
+    name: "RENBIER",
+    slug: "renbier",
+    tagline: "Een tikkeltje rebellie",
+    description: "Sinaasappelzeste, diepe kruiden en een tikkeltje rebellie.",
+    style: "Dubbel",
+    category: "tripel",
+    abv: 7,
+    ibu: 25,
+    image: "/renbier-mockup.jpeg",
+    isActive: true,
+    isFeatured: true,
+    displayOrder: 1,
+    variants: [
+      { id: "ren-bottle", beerId: "renbier-static", type: "bottle", size: "33cl", label: "Flesje 33cl", price: 3.50, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 },
+      { id: "ren-crate", beerId: "renbier-static", type: "crate", size: "24x33cl", label: "Bak (24 x 33cl)", price: 75.00, stock: 20, volumeMl: 7920, isAvailable: true, sortOrder: 2 }
+    ]
+  },
+  {
+    id: "frambo-static",
+    name: "FRAMBO",
+    slug: "frambo",
+    tagline: "One beer against the world",
+    description: "Een beetje sour, een tikkeltje salty, maar verrassend zacht en fruitig van binnen.",
+    style: "Raspberry Gose",
+    category: "seasonal",
+    abv: 4.8,
+    ibu: 15,
+    image: "/Frambo_mockup.png",
+    isActive: true,
+    isFeatured: true,
+    displayOrder: 2,
+    variants: [
+      { id: "fra-bottle", beerId: "frambo-static", type: "bottle", size: "33cl", label: "Flesje 33cl", price: 3.80, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 }
+    ]
+  },
+  {
+    id: "brews-static",
+    name: "BREWS ALMIGHTY",
+    slug: "brews-almighty",
+    tagline: "Bovenaards lekker",
+    description: "Lichtblond met een machtige smaak. Hemelse citrusaccenten door whirlpoolhoppen.",
+    style: "Blond",
+    category: "blond",
+    abv: 6.5,
+    ibu: 30,
+    image: "/brews-almighty-mockup.png",
+    isActive: true,
+    isFeatured: true,
+    displayOrder: 3,
+    variants: [
+      { id: "brews-bottle", beerId: "brews-static", type: "bottle", size: "33cl", label: "Flesje 33cl", price: 3.20, stock: 100, volumeMl: 330, isAvailable: true, sortOrder: 1 },
+      { id: "brews-keg", beerId: "brews-static", type: "keg", size: "20L", label: "Vat 20L", price: 110.00, stock: 5, volumeMl: 20000, isAvailable: true, sortOrder: 2 }
+    ]
+  }
+];
 
 // Star icon component
 const StarIcon = ({ className = "w-6 h-6 fill-primary" }: { className?: string }) => (

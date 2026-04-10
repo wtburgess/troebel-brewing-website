@@ -43,7 +43,7 @@ export default function Home() {
             <div className="beer-img">
               <span className="beer-abv">7%</span>
               <span className="beer-tag">seasonal</span>
-              <img src="/Renbier_mockup.jpeg" alt="RenBier label" />
+              <img src="/renbier-mockup.jpeg" alt="RenBier label" />
             </div>
             <div className="beer-body">
               <h3 className="beer-name">RENBIER</h3>
@@ -56,7 +56,7 @@ export default function Home() {
           <div className="beer-card frambo">
             <div className="beer-img">
               <span className="beer-abv">4,8%</span>
-              <img src="/Frambo_mockup.jpeg" alt="Frambo label" />
+              <img src="/Frambo_mockup.png" alt="Frambo label" />
             </div>
             <div className="beer-body">
               <h3 className="beer-name">FRAMBO</h3>
@@ -66,15 +66,15 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="beer-card brews" style={{ backgroundColor: '#fed3a6', color: '#dc5b26' }}>
+          <div className="beer-card brews">
             <div className="beer-img">
               <span className="beer-abv">6,5%</span>
-              <img src="/Brews almighty_mockup.png" alt="Brews Almighty label" />
+              <img src="/brews-almighty-mockup.png" alt="Brews Almighty label" />
             </div>
             <div className="beer-body">
-              <h3 className="beer-name" style={{ color: '#dc5b26' }}>BREWS ALMIGHTY</h3>
-              <div className="beer-style" style={{ color: '#dc5b26' }}>Blond</div>
-              <p className="beer-desc" style={{ color: '#b84a1e' }}>Lichtblond met een machtige smaak. Hemelse citrusaccenten door whirlpoolhoppen. Bovenaards lekker.</p>
+              <h3 className="beer-name">BREWS ALMIGHTY</h3>
+              <div className="beer-style">Blond</div>
+              <p className="beer-desc">Lichtblond met een machtige smaak. Hemelse citrusaccenten door whirlpoolhoppen. Bovenaards lekker.</p>
               <Link href="/bestellen" className="beer-btn">Bestellen →</Link>
             </div>
           </div>
@@ -108,6 +108,9 @@ export default function Home() {
             <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <a href="#contact" className="btn">Samenwerken →</a>
               <a href="#bieren" className="btn-outline">Onze bieren</a>
+            </div>
+            <div className="wie-team-img">
+              <img src="/troebel-team.jpg" alt="Het Troebel Team" />
             </div>
           </div>
           <div className="wie-visual">

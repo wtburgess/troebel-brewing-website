@@ -53,7 +53,7 @@ const STATIC_BEERS: Beer[] = [
     category: "tripel",
     abv: 7,
     ibu: 25,
-    image: "/Renbier_mockup.jpeg", // Uses images from your public folder
+    image: "/renbier-mockup.jpeg",
     isActive: true,
     isFeatured: true,
     displayOrder: 1,
@@ -72,7 +72,7 @@ const STATIC_BEERS: Beer[] = [
     category: "seasonal",
     abv: 4.8,
     ibu: 15,
-    image: "/Frambo_mockup.jpeg",
+    image: "/Frambo_mockup.png",
     isActive: true,
     isFeatured: true,
     displayOrder: 2,
@@ -90,7 +90,7 @@ const STATIC_BEERS: Beer[] = [
     category: "blond",
     abv: 6.5,
     ibu: 30,
-    image: "/Brews almighty_mockup.png",
+    image: "/brews-almighty-mockup.png",
     isActive: true,
     isFeatured: true,
     displayOrder: 3,
@@ -106,7 +106,7 @@ type PaymentMethod = "bancontact" | "payconiq" | "ideal" | "creditcard";
 type ViewMode = "shop" | "checkout";
 
 export default function BestellenPage() {
-  const { items, updateQuantity, removeItem, getTotalPrice, getItemKey, syncWithBackend } =
+  const { items, updateQuantity, removeItem, getTotalPrice, getItemKey, syncWithBackend, clearCart } =
     useCartStore();
   const openModal = useModalStore((state) => state.openModal);
   const [mounted, setMounted] = useState(false);
@@ -172,9 +172,16 @@ export default function BestellenPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!confirmAge) {
+      alert("Bevestig aub dat je 18 jaar of ouder bent.");
+      return;
+    }
     alert(
-      "Bedankt voor je bestelling! Je wordt doorgestuurd naar de betaalpagina..."
+      `Bedankt voor je bestelling, ${formData.firstName || 'daar'}! Je wordt doorgestuurd naar de betaalpagina...`
     );
+    clearCart();
+    setViewMode("shop");
+    window.scrollTo(0, 0);
   };
 
   const subtotal = getTotalPrice();
@@ -264,20 +271,34 @@ export default function BestellenPage() {
                     <div className="space-y-10">
                       {/* Section 1: Cart */}
                       <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C] relative transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0_#1C1C1C]">
-                        <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-dark">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-4 border-b-2 border-dark gap-4">
                           <h2 className="font-heading text-3xl text-dark flex items-center gap-3 uppercase tracking-wide">
                             <span className="w-8 h-8 bg-primary text-dark border-2 border-dark flex items-center justify-center text-lg font-bold">
                               1
                             </span>
                             Jouw Mandje
                           </h2>
-                          <button
-                            type="button"
-                            onClick={() => setViewMode("shop")}
-                            className="font-heading uppercase text-primary hover:text-dark transition-colors flex items-center gap-2 tracking-wider text-sm font-bold"
-                          >
-                            ← Meer toevoegen
-                          </button>
+                          <div className="flex items-center gap-6">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (window.confirm("Weet je zeker dat je je mandje wilt leegmaken?")) {
+                                  clearCart();
+                                  setViewMode("shop");
+                                }
+                              }}
+                              className="font-heading uppercase text-red-500 hover:text-red-700 transition-colors flex items-center gap-2 tracking-wider text-sm font-bold"
+                            >
+                              Leegmaken
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setViewMode("shop")}
+                              className="font-heading uppercase text-primary hover:text-dark transition-colors flex items-center gap-2 tracking-wider text-sm font-bold"
+                            >
+                              ← Meer toevoegen
+                            </button>
+                          </div>
                         </div>
 
                         {/* Cart Items */}
@@ -448,19 +469,78 @@ export default function BestellenPage() {
                       <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C]">
                         <h2 className="font-heading text-3xl mb-8 pb-4 border-b-2 border-dark uppercase tracking-wide">3. Gegevens</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                          <input type="text" placeholder="Voornaam *" required className="p-3 border-2 border-dark w-full" />
-                          <input type="text" placeholder="Achternaam *" required className="p-3 border-2 border-dark w-full" />
+                          <input 
+                            type="text" 
+                            placeholder="Voornaam *" 
+                            required 
+                            className="p-3 border-2 border-dark w-full focus:border-primary focus:outline-none transition-colors" 
+                            value={formData.firstName}
+                            onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                          />
+                          <input 
+                            type="text" 
+                            placeholder="Achternaam *" 
+                            required 
+                            className="p-3 border-2 border-dark w-full focus:border-primary focus:outline-none transition-colors" 
+                            value={formData.lastName}
+                            onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                          />
                         </div>
-                        <input type="email" placeholder="E-mail *" required className="mt-5 p-3 border-2 border-dark w-full" />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+                          <input 
+                            type="email" 
+                            placeholder="E-mail *" 
+                            required 
+                            className="p-3 border-2 border-dark w-full focus:border-primary focus:outline-none transition-colors" 
+                            value={formData.email}
+                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                          />
+                          <input 
+                            type="tel" 
+                            placeholder="Telefoonnummer" 
+                            className="p-3 border-2 border-dark w-full focus:border-primary focus:outline-none transition-colors" 
+                            value={formData.phone}
+                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          />
+                        </div>
+
+                        {/* Age Verification */}
+                        <div className="mt-8 p-5 border-2 border-primary bg-primary/10">
+                          <label className="flex items-center gap-3 cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              required 
+                              checked={confirmAge} 
+                              onChange={(e) => setConfirmAge(e.target.checked)} 
+                              className="w-6 h-6 accent-primary border-2 border-dark cursor-pointer" 
+                            />
+                            <span className="font-bold text-dark text-lg">Ik bevestig dat ik 18 jaar of ouder ben.*</span>
+                          </label>
+                        </div>
                       </section>
 
                       {/* Section 4: Payment */}
                       <section className="bg-white border-2 border-dark p-6 shadow-[6px_6px_0_#1C1C1C]">
                         <h2 className="font-heading text-3xl mb-8 pb-4 border-b-2 border-dark uppercase tracking-wide">4. Betaling</h2>
                         <div className="flex flex-wrap gap-4">
-                          {['Bancontact', 'Payconiq', 'iDeal'].map(m => (
-                            <label key={m} className="p-3 border-2 border-dark font-bold cursor-pointer hover:bg-primary/10">
-                              <input type="radio" name="payment" className="mr-2" /> {m}
+                          {['bancontact', 'payconiq', 'ideal'].map(m => (
+                            <label 
+                              key={m} 
+                              className={`flex-1 min-w-[120px] text-center p-4 border-2 font-bold cursor-pointer transition-all ${
+                                paymentMethod === m 
+                                  ? 'border-primary bg-primary/10 text-dark shadow-[4px_4px_0_#D4A017]' 
+                                  : 'border-dark text-gray-500 hover:text-dark hover:bg-gray-50'
+                              }`}
+                            >
+                              <input 
+                                type="radio" 
+                                name="payment" 
+                                value={m}
+                                checked={paymentMethod === m}
+                                onChange={() => setPaymentMethod(m as PaymentMethod)}
+                                className="hidden" 
+                              /> 
+                              <span className="capitalize block">{m}</span>
                             </label>
                           ))}
                         </div>
@@ -470,12 +550,27 @@ export default function BestellenPage() {
                     {/* Summary Aside */}
                     <aside className="lg:sticky lg:top-24 h-fit">
                       <div className="bg-dark text-white p-8 shadow-[8px_8px_0_#D4A017] border-2 border-dark">
-                        <h3 className="font-heading text-3xl mb-8 pb-4 border-b-2 border-dashed border-white/20">Overzicht</h3>
-                        <div className="flex justify-between font-heading text-4xl pt-8 border-t-2 border-dashed border-white/20">
-                          <span>TOTAAL</span>
-                          <span className="text-primary">€ {total.toFixed(2)}</span>
+                        <h3 className="font-heading text-3xl mb-6 pb-4 border-b-2 border-dashed border-white/20">Overzicht</h3>
+                        
+                        <div className="space-y-4 text-lg font-body mb-6">
+                          <div className="flex justify-between items-center text-white/80">
+                            <span>Subtotaal</span>
+                            <span className="font-bold text-white">€ {subtotal.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-white/80">
+                            <span>Verzending</span>
+                            <span className="font-bold text-white">
+                              {shipping === 0 ? "Gratis (Afhalen)" : `€ ${shipping.toFixed(2)}`}
+                            </span>
+                          </div>
                         </div>
-                        <button type="submit" className="w-full mt-10 bg-primary text-dark font-heading text-xl font-bold py-4 border-2 border-dark shadow-[4px_4px_0_#1C1C1C] hover:bg-primary/90">
+
+                        <div className="flex justify-between items-end font-heading text-4xl pt-6 border-t-2 border-dashed border-white/20">
+                          <span className="text-2xl">TOTAAL</span>
+                          <span className="text-primary text-5xl">€ {total.toFixed(2)}</span>
+                        </div>
+
+                        <button type="submit" className="w-full mt-10 bg-primary text-dark font-heading text-2xl tracking-wider py-5 border-2 border-dark shadow-[4px_4px_0_#1C1C1C] hover:bg-primary/90 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#1C1C1C] transition-all">
                           BETALEN →
                         </button>
                       </div>
