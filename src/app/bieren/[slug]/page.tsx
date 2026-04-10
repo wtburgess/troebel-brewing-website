@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getAllBeers } from "@/lib/api/beers";
 import BeerDetailClient from "@/components/beer/BeerDetailClient";
+import { Beer } from "@/types/beer";
 
 interface PageProps {
   params: Promise<{
@@ -39,7 +40,7 @@ export async function generateStaticParams() {
 
 export default async function BeerDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  let beers = [];
+  let beers: Beer[] = [];
   
   try {
     beers = await getAllBeers();
