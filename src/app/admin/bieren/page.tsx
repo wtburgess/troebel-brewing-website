@@ -165,6 +165,12 @@ export default function AdminBierenPage() {
             TROEBEL ADMIN
           </span>
           <Link
+            href="/admin/bestellingen"
+            className="text-gray-400 text-sm hover:text-white transition-colors"
+          >
+            Bestellingen
+          </Link>
+          <Link
             href="/"
             target="_blank"
             className="text-gray-400 text-sm hover:text-white transition-colors"

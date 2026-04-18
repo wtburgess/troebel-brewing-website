@@ -56,7 +56,7 @@ export default function QuickAddModal() {
       addToast({
         type: "success",
         message: `${beer.name} - ${selectedVariant.label} toegevoegd!`,
-        action: { label: "Bekijk mand", href: "/bestellen" },
+        action: { label: "Bekijk mand", href: "/webshop" },
       });
       handleClose();
     }
@@ -153,7 +153,7 @@ export default function QuickAddModal() {
                       );
                       if (variant) setSelectedVariant(variant);
                     }}
-                    className="w-full px-3 py-2 border-2 border-dark font-body focus:outline-none focus:border-yellow"
+                    className="w-full px-3 py-2 border-2 border-dark font-body focus:outline-none focus:border-yellow hover:border-yellow transition-colors"
                   >
                     {availableVariants.map((variant) => (
                       <option key={variant.id} value={variant.id}>
@@ -185,7 +185,7 @@ export default function QuickAddModal() {
                   <div className="flex items-center border-2 border-dark">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 font-heading text-xl hover:bg-gray-100 transition-colors"
+                      className="w-10 h-10 font-heading text-xl hover:bg-dark hover:text-yellow transition-colors"
                     >
                       −
                     </button>
@@ -196,15 +196,15 @@ export default function QuickAddModal() {
                       onClick={() =>
                         setQuantity(Math.min(selectedVariant.stock, quantity + 1))
                       }
-                      className="w-10 h-10 font-heading text-xl hover:bg-gray-100 transition-colors"
+                      className="w-10 h-10 font-heading text-xl hover:bg-dark hover:text-yellow transition-colors"
                     >
                       +
                     </button>
                   </div>
                   <button
                     onClick={handleAdd}
-                    className="flex-1 bg-yellow text-dark font-heading py-3 px-6 border-2 border-dark hover:bg-dark hover:text-yellow transition-colors"
-                    style={{ boxShadow: "3px 3px 0px var(--color-dark)" }}
+                    className="flex-1 bg-yellow text-dark font-heading py-3 px-6 border-2 border-dark hover:bg-dark hover:text-yellow transition-all quickadd-cta"
+                    style={{ transform: "skew(-4deg)", boxShadow: "3px 3px 0px var(--color-dark)" }}
                   >
                     IN WINKELMAND
                   </button>
@@ -308,7 +308,7 @@ export default function QuickAddModal() {
                     );
                     if (variant) setSelectedVariant(variant);
                   }}
-                  className="w-full px-3 py-3 border-2 border-dark font-body text-base focus:outline-none focus:border-yellow"
+                  className="w-full px-3 py-3 border-2 border-dark font-body text-base focus:outline-none focus:border-yellow hover:border-yellow transition-colors"
                 >
                   {availableVariants.map((variant) => (
                     <option key={variant.id} value={variant.id}>
@@ -360,7 +360,7 @@ export default function QuickAddModal() {
                 <div className="flex items-center border-2 border-dark">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-12 h-12 font-heading text-xl hover:bg-gray-100 transition-colors"
+                    className="w-12 h-12 font-heading text-xl hover:bg-dark hover:text-yellow transition-colors"
                   >
                     −
                   </button>
@@ -371,15 +371,15 @@ export default function QuickAddModal() {
                     onClick={() =>
                       setQuantity(Math.min(selectedVariant.stock, quantity + 1))
                     }
-                    className="w-12 h-12 font-heading text-xl hover:bg-gray-100 transition-colors"
+                    className="w-12 h-12 font-heading text-xl hover:bg-dark hover:text-yellow transition-colors"
                   >
                     +
                   </button>
                 </div>
                 <button
                   onClick={handleAdd}
-                  className="flex-1 bg-yellow text-dark font-heading py-3 px-6 border-2 border-dark hover:bg-dark hover:text-yellow transition-colors text-lg"
-                  style={{ boxShadow: "3px 3px 0px var(--color-dark)" }}
+                  className="flex-1 bg-yellow text-dark font-heading py-3 px-6 border-2 border-dark hover:bg-dark hover:text-yellow transition-all text-lg quickadd-cta"
+                  style={{ transform: "skew(-4deg)", boxShadow: "3px 3px 0px var(--color-dark)" }}
                 >
                   IN WINKELMAND
                 </button>

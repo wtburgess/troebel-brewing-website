@@ -18,23 +18,16 @@ export default function FloatingCartBar({ onCheckout, className }: FloatingCartB
   if (items.length === 0) return null;
 
   return (
-    <div className={`fixed bottom-5 left-5 right-5 bg-dark text-white py-4 px-5 flex justify-between items-center shadow-xl border-2 border-primary z-50 lg:hidden transition-transform duration-300 ${className || ""}`}>
-      <div className="flex items-center gap-3">
-        <span className="w-6 h-6 bg-primary text-dark rounded-full flex items-center justify-center font-bold text-sm">
-          {totalItems}
-        </span>
-        <div className="flex flex-col">
-          <span className="font-bold text-sm">Je Winkelmand</span>
-          <span className="text-xs opacity-80">
-            Totaal: € {totalPrice.toFixed(2)}
-          </span>
+    <div className={`fc-bar${className ? ` ${className}` : ""}`}>
+      <div className="fc-bar-info">
+        <span className="fc-bar-count">{totalItems}</span>
+        <div>
+          <span className="fc-bar-label">Je winkelmand</span>
+          <span className="fc-bar-sub">Totaal € {totalPrice.toFixed(2)}</span>
         </div>
       </div>
-      <button
-        onClick={onCheckout}
-        className="flex items-center gap-2 font-semibold text-sm hover:text-primary transition-colors"
-      >
-        AFREKENEN <span className="text-primary font-bold text-lg">→</span>
+      <button type="button" onClick={onCheckout} className="fc-bar-go">
+        Afrekenen →
       </button>
     </div>
   );

@@ -1,9 +1,16 @@
-import React from 'react';
-import Link from 'next/link';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import HomepageBeers from '@/components/sections/HomepageBeers';
+import { getFeaturedBeers } from '@/lib/api/beers';
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const featured = await getFeaturedBeers();
+
   return (
     <>
+      <Header />
 
       {/* HERO */}
       <section className="hero">
@@ -39,45 +46,7 @@ export default function Home() {
         </div>
         <div className="beer-grid">
 
-          <div className="beer-card ren">
-            <div className="beer-img">
-              <span className="beer-abv">7%</span>
-              <span className="beer-tag">seasonal</span>
-              <img src="/renbier-mockup.jpeg" alt="RenBier label" />
-            </div>
-            <div className="beer-body">
-              <h3 className="beer-name">RENBIER</h3>
-              <div className="beer-style">Dubbel</div>
-              <p className="beer-desc">Sinaasappelzeste, diepe kruiden en een tikkeltje rebellie. Als een donkere winternacht met meer smaak dan goede bedoelingen.</p>
-              <Link href="/bestellen" className="beer-btn">Bestellen →</Link>
-            </div>
-          </div>
-
-          <div className="beer-card frambo">
-            <div className="beer-img">
-              <span className="beer-abv">4,8%</span>
-              <img src="/Frambo_mockup.png" alt="Frambo label" />
-            </div>
-            <div className="beer-body">
-              <h3 className="beer-name">FRAMBO</h3>
-              <div className="beer-style">Raspberry Gose</div>
-              <p className="beer-desc">Een beetje sour, een tikkeltje salty, maar verrassend zacht en fruitig van binnen. One beer against the world.</p>
-              <Link href="/bestellen" className="beer-btn">Bestellen →</Link>
-            </div>
-          </div>
-
-          <div className="beer-card brews">
-            <div className="beer-img">
-              <span className="beer-abv">6,5%</span>
-              <img src="/brews-almighty-mockup.png" alt="Brews Almighty label" />
-            </div>
-            <div className="beer-body">
-              <h3 className="beer-name">BREWS ALMIGHTY</h3>
-              <div className="beer-style">Blond</div>
-              <p className="beer-desc">Lichtblond met een machtige smaak. Hemelse citrusaccenten door whirlpoolhoppen. Bovenaards lekker.</p>
-              <Link href="/bestellen" className="beer-btn">Bestellen →</Link>
-            </div>
-          </div>
+          <HomepageBeers beers={featured} />
 
           <div className="beer-card custom">
             <div className="beer-img">
@@ -191,6 +160,7 @@ export default function Home() {
       </section>
 
       <a href="#bieren" className="sticker" style={{ textDecoration: 'none' }}>FUCK<br />HELDER</a>
+      <Footer />
     </>
   );
 }

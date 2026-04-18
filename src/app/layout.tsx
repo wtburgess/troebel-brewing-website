@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Anton, Roboto_Condensed, Permanent_Marker } from "next/font/google";
 import "./globals.css";
 import ModalProvider from "@/components/providers/ModalProvider";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 
 const anton = Anton({
   variable: "--font-anton",
@@ -44,10 +42,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl-BE">
-      <body className={`${anton.variable} ${robotoCondensed.variable} ${permanentMarker.variable} antialiased`}>
-        <Header />
+      <body
+        className={`${anton.variable} ${robotoCondensed.variable} ${permanentMarker.variable} antialiased`}
+        suppressHydrationWarning
+      >
         {children}
-        <Footer />
         <ModalProvider />
       </body>
     </html>

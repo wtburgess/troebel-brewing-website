@@ -15,6 +15,8 @@ export default function Footer() {
           <Link href="/#wie">Wie wij zijn</Link>
           <Link href="/#tap">Tapverhuur</Link>
           <Link href="/#contact">Contact</Link>
+          <Link href="/voorwaarden">Voorwaarden</Link>
+          <Link href="/admin">Beheer</Link>
         </div>
         <div className="footer-col">
           <h5>Contact</h5><p>Congresstraat 22/01</p><p>2060 Antwerpen, België</p><a href="mailto:info@troebelbrewing.be">info@troebelbrewing.be</a><a href="https://instagram.com/troebelbrewing" target="_blank" rel="noreferrer">@troebelbrewing</a>

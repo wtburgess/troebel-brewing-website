@@ -70,53 +70,7 @@ export interface CartItem {
   quantity: number;
 }
 
-// PocketBase record types (raw from API)
-export interface PocketBaseBeer {
-  id: string;
-  slug: string;
-  name: string;
-  style: string;
-  category: BeerCategory;
-  description: string;
-  longDescription?: string;
-  abv: number;
-  ibu?: number;
-  rating?: number;
-  ratingCount?: number;
-  image: string;
-  tastingNotes?: string;   // Plain text in PocketBase
-  foodPairings?: string;   // Plain text in PocketBase
-  isNew?: boolean;
-  isLimited?: boolean;
-  isFeatured?: boolean;    // Show in homepage lineup
-  sortOrder?: number;
-  created: string;
-  updated: string;
-  collectionId: string;
-  collectionName: string;
-  expand?: {
-    'beer_variants(beer)'?: PocketBaseVariant[];
-  };
-}
-
-export interface PocketBaseVariant {
-  id: string;
-  beer: string;            // Beer ID reference
-  type: VariantType;
-  size: string;
-  label: string;
-  price: number;
-  stock: number;
-  volumeMl: number;
-  isAvailable: boolean;
-  sortOrder: number;
-  created: string;
-  updated: string;
-  collectionId: string;
-  collectionName: string;
-}
-
-// Order types for Phase D
+// Order types
 export type OrderStatus = "pending" | "paid" | "completed" | "cancelled";
 export type FulfillmentType = "pickup" | "delivery";
 

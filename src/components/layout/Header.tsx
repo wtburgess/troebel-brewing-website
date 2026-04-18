@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import CartLink from './CartLink';
 
 export default function Header() {
   return (
@@ -11,11 +12,10 @@ export default function Header() {
         <ul className="nav">
           <li><Link href="/#bieren">Bieren</Link></li>
           <li><Link href="/#wie">Wie wij zijn</Link></li>
-          <li><Link href="/#tap">Tapverhuur</Link></li>
           <li><Link href="/#contact">Contact</Link></li>
         </ul>
       </nav>
-      <Link href="/bestellen" className="btn">Bestellen / Cart →</Link>
+      <CartLink />
     </header>
   );
 }

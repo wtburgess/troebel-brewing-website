@@ -320,7 +320,7 @@ export default function VerhaalPage() {
             <p className="text-dark/70 text-lg mb-8">
               Ontdek al onze bieren in de webshop.
             </p>
-            <Link href="/bestellen" className="btn-brutal btn-brutal-dark">
+            <Link href="/webshop" className="btn-brutal btn-brutal-dark">
               Naar de Webshop →
             </Link>
           </div>

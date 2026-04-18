@@ -27,10 +27,12 @@ export default function Toast({ toast }: ToastProps) {
 
   return (
     <div
-      className={`${bgColor} text-white px-4 py-3 border-3 border-dark shadow-md flex items-center justify-between gap-4 min-w-[280px] max-w-[400px] toast-enter`}
+      className={`${bgColor} px-4 py-3 border-3 border-dark shadow-md flex items-center justify-between gap-4 min-w-[280px] max-w-[400px] toast-enter`}
       style={{ boxShadow: "4px 4px 0px var(--color-yellow)" }}
     >
-      <span className="text-sm font-bold">{toast.message}</span>
+      <span className="text-yellow font-heading uppercase tracking-wide text-sm">
+        {toast.message}
+      </span>
       <div className="flex items-center gap-2">
         {toast.action && (
           <Link
@@ -42,7 +44,7 @@ export default function Toast({ toast }: ToastProps) {
         )}
         <button
           onClick={() => removeToast(toast.id)}
-          className="text-gray-400 hover:text-white ml-1"
+          className="text-yellow/70 hover:text-yellow ml-1"
           aria-label="Sluiten"
         >
           <svg

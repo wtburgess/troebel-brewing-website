@@ -9,12 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.103.3",
     "next": "16.0.10",
-    "pocketbase": "^0.26.5",
     "react": "19.2.1",
     "react-dom": "19.2.1",
-    "three": "^0.182.0",
-    "vanta": "^0.5.24",
+    "resend": "^6.12.0",
     "zustand": "^5.0.9"
   },
   "devDependencies": {
@@ -22,7 +22,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.182.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.10",
     "tailwindcss": "^4",
