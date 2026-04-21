@@ -36,7 +36,7 @@ export default function VoorwaardenPage() {
               </h2>
               <p>
                 Troebel Brewing Co. — microbrouwerij gevestigd te Congresstraat 22/01, 2060
-                Antwerpen, België. Contact: info@troebelbrewing.be.
+                Antwerpen, België. Contact: Troebel.brew@gmail.com.
               </p>
             </article>
 
@@ -107,7 +107,7 @@ export default function VoorwaardenPage() {
               <p>
                 Wij verwerken enkel de gegevens die nodig zijn om je bestelling te verwerken
                 (naam, e-mail, telefoon, bestelhistoriek) en conform de GDPR/AVG. Gegevens
-                worden niet doorverkocht. Vragen of inzage: info@troebelbrewing.be.
+                worden niet doorverkocht. Vragen of inzage: Troebel.brew@gmail.com.
               </p>
             </article>
 
@@ -128,7 +128,7 @@ export default function VoorwaardenPage() {
               </h2>
               <p>
                 Vragen, klachten of andere opmerkingen? Mail naar{" "}
-                <a href="mailto:info@troebelbrewing.be">info@troebelbrewing.be</a> — we komen
+                <a href="mailto:Troebel.brew@gmail.com">Troebel.brew@gmail.com</a> — we komen
                 zo snel mogelijk bij je terug.
               </p>
             </article>

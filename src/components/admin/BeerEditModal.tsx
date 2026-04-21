@@ -72,6 +72,7 @@ export default function BeerEditModal({
   const [editVariantForm, setEditVariantForm] = useState<Partial<BeerVariant>>({});
   const [newVariant, setNewVariant] = useState<NewVariantForm>(initialVariantForm);
   const [variantSaving, setVariantSaving] = useState(false);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
 
   useEffect(() => {
     if (beer) {
@@ -109,7 +110,7 @@ export default function BeerEditModal({
         ibu: undefined,
         isNew: true,
         isLimited: false,
-        isFeatured: false,
+        isFeatured: true,
         sortOrder: 0,
       });
       setVariants([]);
@@ -118,6 +119,7 @@ export default function BeerEditModal({
       setImageFile(null);
     }
     setError(null);
+    setStep(1);
   }, [beer]);
 
   useEffect(() => {
@@ -167,40 +169,139 @@ export default function BeerEditModal({
     setError(null);
   };
 
+  // Persist any temp_ draft variants against a real beer ID. Returns the
+  // successfully-created variants and any drafts that still failed.
+  const persistDraftVariants = async (
+    beerId: string
+  ): Promise<{ created: BeerVariant[]; failedDrafts: BeerVariant[] }> => {
+    const existingReal = variants.filter((v) => !v.id.startsWith("temp_"));
+    const drafts = variants.filter((v) => v.id.startsWith("temp_"));
+    if (drafts.length === 0) return { created: [], failedDrafts: [] };
+
+    const results = await Promise.all(
+      drafts.map((draft, idx) =>
+        createVariant({
+          beer: beerId,
+          type: draft.type,
+          size: draft.size,
+          label: draft.label,
+          price: draft.price,
+          isAvailable: draft.isAvailable,
+          sortOrder: existingReal.length + idx,
+        })
+      )
+    );
+
+    const created = results
+      .map((r) => r.variant)
+      .filter((v): v is BeerVariant => !!v);
+    const failedDrafts = results
+      .map((r, idx) => (r.success ? null : drafts[idx]))
+      .filter((v): v is BeerVariant => v !== null);
+
+    return { created, failedDrafts };
+  };
+
+  const validateStep1 = (): string | null => {
+    if (!formData.name || !formData.style) {
+      return "Vul naam en stijl in";
+    }
+    const hasExistingImage = !!beer?.image || !!savedBeer?.image;
+    if (!hasExistingImage && !imageFile && !imagePreview) {
+      return "Voeg een afbeelding toe";
+    }
+    return null;
+  };
+
+  const validateStep2 = (): string | null => {
+    if (!formData.description) {
+      return "Korte beschrijving is verplicht";
+    }
+    return null;
+  };
+
+  const handleNext = () => {
+    if (step === 1) {
+      const err = validateStep1();
+      if (err) { setError(err); return; }
+      setError(null);
+      setStep(2);
+    } else if (step === 2) {
+      const err = validateStep2();
+      if (err) { setError(err); return; }
+      setError(null);
+      setStep(3);
+    }
+  };
+
   const handleSaveDetails = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Only the final step actually saves. Any earlier submit (Enter key, etc.)
+    // just advances the wizard — never persists.
+    if (step !== 3) {
+      handleNext();
+      return;
+    }
+
     setSaving(true);
     setError(null);
 
     try {
       if (isCreating || !savedBeer) {
-        if (!formData.name || !formData.style || !formData.description) {
-          setError("Vul alle verplichte velden in");
-          setSaving(false);
-          return;
-        }
-        if (!imageFile && !imagePreview) {
-          setError("Voeg een afbeelding toe");
-          setSaving(false);
-          return;
-        }
+        const s1 = validateStep1();
+        if (s1) { setError(s1); setSaving(false); setStep(1); return; }
+        const s2 = validateStep2();
+        if (s2) { setError(s2); setSaving(false); setStep(2); return; }
+
         const result = await createBeer(formData as CreateBeerData, imageFile || undefined);
-        if (result.success && result.beer) {
-          const newBeer: Beer = { ...result.beer, image: imagePreview || result.beer.image, variants: [] };
-          setSavedBeer(newBeer);
-          setError(null);
-        } else {
+        if (!result.success || !result.beer) {
           setError(result.error || "Aanmaken mislukt");
+          setSaving(false);
+          return;
+        }
+
+        const { created, failedDrafts } = await persistDraftVariants(result.beer.id);
+
+        const newBeer: Beer = {
+          ...result.beer,
+          variants: created,
+        };
+
+        setSavedBeer(newBeer);
+        setVariants([...created, ...failedDrafts]);
+        onSaved(newBeer);
+
+        if (failedDrafts.length > 0) {
+          setError(`Bier aangemaakt, maar ${failedDrafts.length} variant(en) konden niet worden toegevoegd. Pas ze aan en klik opnieuw op Opslaan.`);
+        } else {
+          onClose();
         }
       } else {
         const result = await updateBeer(savedBeer.id, formData, imageFile || undefined);
-        if (result.success && result.beer) {
-          const updatedBeer: Beer = { ...result.beer, variants, image: imagePreview || savedBeer.image };
-          setSavedBeer(updatedBeer);
-          onSaved(updatedBeer);
-          setError(null);
-        } else {
+        if (!result.success || !result.beer) {
           setError(result.error || "Opslaan mislukt");
+          setSaving(false);
+          return;
+        }
+
+        const { created, failedDrafts } = await persistDraftVariants(savedBeer.id);
+        const existingReal = variants.filter((v) => !v.id.startsWith("temp_"));
+        const nextVariants = [...existingReal, ...created];
+
+        const updatedBeer: Beer = {
+          ...result.beer,
+          variants: nextVariants,
+        };
+
+        setSavedBeer(updatedBeer);
+        setVariants([...nextVariants, ...failedDrafts]);
+        onSaved(updatedBeer);
+
+        if (failedDrafts.length > 0) {
+          setError(`Kon ${failedDrafts.length} variant(en) niet toevoegen. Pas ze aan en probeer opnieuw.`);
+        } else {
+          onClose();
         }
       }
     } catch {
@@ -224,10 +325,29 @@ export default function BeerEditModal({
   };
 
   const handleAddVariant = async () => {
-    if (!savedBeer) return;
-    setVariantSaving(true);
     setError(null);
     const variantType = (newVariant.type === "custom" ? newVariant.customType : newVariant.type) as VariantType;
+
+    if (!savedBeer) {
+      // Draft mode — store locally until the beer is created
+      const tempId = `temp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const draft: BeerVariant = {
+        id: tempId,
+        beerId: "",
+        type: variantType,
+        size: newVariant.size,
+        label: newVariant.label,
+        price: newVariant.price,
+        volumeMl: 0,
+        isAvailable: true,
+        sortOrder: variants.length,
+      };
+      setVariants([...variants, draft]);
+      setNewVariant(initialVariantForm);
+      return;
+    }
+
+    setVariantSaving(true);
     const data: CreateVariantData = {
       beer: savedBeer.id,
       type: variantType,
@@ -255,9 +375,29 @@ export default function BeerEditModal({
   };
 
   const handleSaveVariantEdit = async () => {
-    if (!editingVariantId || !savedBeer) return;
-    setVariantSaving(true);
+    if (!editingVariantId) return;
     setError(null);
+
+    // Draft variant — update local state only
+    if (editingVariantId.startsWith("temp_") || !savedBeer) {
+      setVariants((prev) =>
+        prev.map((v) =>
+          v.id === editingVariantId
+            ? {
+                ...v,
+                label: editVariantForm.label ?? v.label,
+                size: editVariantForm.size ?? v.size,
+                price: editVariantForm.price ?? v.price,
+              }
+            : v
+        )
+      );
+      setEditingVariantId(null);
+      setEditVariantForm({});
+      return;
+    }
+
+    setVariantSaving(true);
     const result = await updateVariant(editingVariantId, {
       label: editVariantForm.label,
       size: editVariantForm.size,
@@ -276,8 +416,14 @@ export default function BeerEditModal({
   };
 
   const handleDeleteVariant = async (variantId: string) => {
-    if (!savedBeer) return;
     if (!confirm("Weet je zeker dat je deze variant wilt verwijderen?")) return;
+
+    // Draft variant — remove locally, no API call
+    if (variantId.startsWith("temp_") || !savedBeer) {
+      setVariants((prev) => prev.filter((v) => v.id !== variantId));
+      return;
+    }
+
     setVariantSaving(true);
     setError(null);
     const result = await deleteVariant(variantId);
@@ -292,7 +438,14 @@ export default function BeerEditModal({
   };
 
   const handleToggleAvailability = async (variantId: string) => {
-    if (!savedBeer) return;
+    // Draft variant — toggle locally
+    if (variantId.startsWith("temp_") || !savedBeer) {
+      setVariants((prev) =>
+        prev.map((v) => (v.id === variantId ? { ...v, isAvailable: !v.isAvailable } : v))
+      );
+      return;
+    }
+
     setVariantSaving(true);
     const result = await toggleAvailability(variantId);
     if (result.success && result.isAvailable !== undefined) {
@@ -303,23 +456,28 @@ export default function BeerEditModal({
     setVariantSaving(false);
   };
 
-  const canAddVariants = savedBeer !== null;
-
   return (
     <div
-      className="fixed inset-0 z-[2000] flex items-start justify-center bg-black/70 p-4 md:p-6 overflow-y-auto"
+      className="fixed inset-0 z-[2000] flex items-center justify-center p-4 md:p-6"
+      style={{ backgroundColor: "rgba(13, 13, 11, 0.92)" }}
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
       <div
-        className="admin-modal-v2 w-full max-w-[960px] my-auto"
+        className="admin-modal-v2 w-full max-w-[960px]"
         style={{ display: "flex", flexDirection: "column", background: "var(--warm-white)", border: "3px solid var(--dark)", boxShadow: "10px 10px 0 var(--dark)", maxHeight: "calc(100vh - 3rem)" }}
       >
 
         {/* Header */}
         <div className="admin-modal-header">
-          <div>
-            <span className="admin-modal-eyebrow">{isCreating ? "nieuw bier" : "bewerken"}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", flex: 1, minWidth: 0 }}>
             <h2 className="admin-modal-title">{isCreating ? "Bier Toevoegen" : beer?.name}</h2>
+            <div className="admin-modal-steps">
+              <span className={`admin-modal-step ${step === 1 ? "admin-modal-step--active" : "admin-modal-step--done"}`}>1 · Basis</span>
+              <span className="admin-modal-step-sep">→</span>
+              <span className={`admin-modal-step ${step === 2 ? "admin-modal-step--active" : step > 2 ? "admin-modal-step--done" : ""}`}>2 · Teksten</span>
+              <span className="admin-modal-step-sep">→</span>
+              <span className={`admin-modal-step ${step === 3 ? "admin-modal-step--active" : ""}`}>3 · Varianten</span>
+            </div>
           </div>
           <button onClick={handleClose} className="admin-modal-close" aria-label="Sluiten">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2L16 16M16 2L2 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/></svg>
@@ -328,11 +486,13 @@ export default function BeerEditModal({
 
         {/* Body */}
         <form onSubmit={handleSaveDetails} style={{ display: "flex", flexDirection: "column", flex: "1 1 auto", minHeight: 0, overflow: "hidden" }}>
-          <div className="admin-modal-v2-body" style={{ padding: "1.5rem 1.75rem", overflowY: "auto", flex: "1 1 auto", minHeight: 0 }}>
+          <div className="admin-modal-v2-body">
             {error && (
               <div className="admin-error-banner" style={{ marginBottom: "1.25rem" }}>{error}</div>
             )}
 
+            {step === 1 && (
+            <>
             {/* ── Row 1: two-column grid ── */}
             <div
               className="admin-modal-v2-grid"
@@ -340,20 +500,17 @@ export default function BeerEditModal({
             >
 
               {/* Left: image + status */}
-              <div className="admin-modal-v2-left" style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-                <div className="admin-v2-section-head">
-                  <span className="admin-v2-eyebrow">afbeelding</span>
-                </div>
+              <div className="admin-modal-v2-left" style={{ display: "flex", flexDirection: "column", minWidth: 0, gap: "1rem" }}>
                 <div
                   className="admin-v2-image-drop"
                   onClick={() => fileInputRef.current?.click()}
                   onDrop={handleDrop}
                   onDragOver={(e) => e.preventDefault()}
                 >
-                  {(imagePreview || (beer && beer.image)) ? (
+                  {(imagePreview || beer?.image || savedBeer?.image) ? (
                     <>
                       <div className="admin-v2-image-preview">
-                        <Image src={imagePreview || beer?.image || ""} alt="Preview" fill className="object-contain" sizes="240px" />
+                        <Image src={imagePreview || beer?.image || savedBeer?.image || ""} alt="Preview" fill className="object-contain" sizes="240px" />
                       </div>
                       <span className="admin-v2-image-hint">Wijzig afbeelding</span>
                     </>
@@ -361,15 +518,11 @@ export default function BeerEditModal({
                     <>
                       <div className="admin-v2-image-icon">📷</div>
                       <div className="admin-v2-image-hint">Klik of sleep</div>
-                      <div className="admin-v2-image-sub">JPG, PNG, WebP · max 5MB</div>
                     </>
                   )}
                   <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageSelect} className="hidden" />
                 </div>
 
-                <div className="admin-v2-section-head" style={{ marginTop: "1.25rem" }}>
-                  <span className="admin-v2-eyebrow">status</span>
-                </div>
                 <div className="admin-v2-status-box" style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
                   <label className="admin-v2-checkbox-row" style={{ display: "flex", alignItems: "center", gap: "0.65rem", cursor: "pointer", fontSize: "0.85rem" }}>
                     <input type="checkbox" name="isFeatured" checked={formData.isFeatured || false} onChange={handleInputChange} className="admin-v2-checkbox" />
@@ -388,9 +541,6 @@ export default function BeerEditModal({
 
               {/* Right: basis info */}
               <div className="admin-modal-v2-right" style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-                <div className="admin-v2-section-head">
-                  <span className="admin-v2-eyebrow">basis</span>
-                </div>
                 <div className="form-group">
                   <label className="form-label">Naam *</label>
                   <input type="text" name="name" value={formData.name || ""} onChange={handleInputChange} required className="form-input" placeholder="Bijv. Brews Almighty" />
@@ -426,19 +576,18 @@ export default function BeerEditModal({
               </div>
             </div>
 
-            <hr className="admin-modal-divider" />
+            </>
+            )}
 
-            {/* ── Teksten (full-width) ── */}
-            <div className="admin-v2-section-head">
-              <span className="admin-v2-eyebrow">teksten</span>
-            </div>
+            {step === 2 && (
+            <>
             <div className="form-group">
-              <label className="form-label">Korte beschrijving (card)</label>
+              <label className="form-label">Korte beschrijving (card) *</label>
               <textarea name="description" value={formData.description || ""} onChange={handleInputChange} className="form-textarea" rows={2} placeholder="Een krachtige tripel met fruitige toetsen en een zachte afdronk." />
             </div>
             <div className="form-group">
               <label className="form-label">Lange beschrijving (detailpagina)</label>
-              <textarea name="longDescription" value={formData.longDescription || ""} onChange={handleInputChange} className="form-textarea" rows={4} placeholder="Onze klassieker. Brews Almighty is een eerbetoon aan de traditionele Belgische tripel..." />
+              <textarea name="longDescription" value={formData.longDescription || ""} onChange={handleInputChange} className="form-textarea" rows={5} placeholder="Onze klassieker. Brews Almighty is een eerbetoon aan de traditionele Belgische tripel..." />
             </div>
             <div className="admin-v2-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.85rem" }}>
               <div className="form-group mb-0">
@@ -450,27 +599,14 @@ export default function BeerEditModal({
                 <input type="text" name="foodPairings" value={formData.foodPairings || ""} onChange={handleInputChange} className="form-input" placeholder="Geitenkaas, Witlof" />
               </div>
             </div>
+            </>
+            )}
 
-            <hr className="admin-modal-divider" />
-
-            {/* ── Varianten (full-width) ── */}
-            <div className="admin-v2-section-head">
-              <span className="admin-v2-eyebrow">varianten</span>
-            </div>
-
+            {step === 3 && (
             <div className="admin-v2-variants-wrap">
-              {!canAddVariants ? (
-                <div className="admin-variant-locked-panel">
-                  <span className="admin-variant-locked-eyebrow">stap 2</span>
-                  <span className="admin-variant-locked-title">Nog niet beschikbaar</span>
-                  <p className="admin-variant-locked-body">
-                    Sla eerst de bierdetails op via <strong>“Bier Aanmaken”</strong> hieronder. Daarna kun je varianten (flesjes, bakken, vaten) toevoegen.
-                  </p>
-                </div>
-              ) : variants.length === 0 ? (
+              {variants.length === 0 ? (
                 <div className="admin-variant-empty">
-                  <span className="admin-variant-empty-title">Geen varianten</span>
-                  <span className="admin-variant-empty-body">Dit bier heeft nog geen varianten. Klanten kunnen het niet bestellen tot je er minstens één toevoegt.</span>
+                  <span className="admin-variant-empty-title">Nog geen varianten</span>
                 </div>
               ) : (
                 <div className="admin-variant-list">
@@ -528,7 +664,6 @@ export default function BeerEditModal({
               )}
 
               {/* Add new variant form */}
-              {canAddVariants && (
               <div className="admin-variant-add-form">
                 <div className="admin-variant-add-fields" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "flex-end" }}>
                   <div className="form-group mb-0">
@@ -600,23 +735,47 @@ export default function BeerEditModal({
                   </div>
                 </div>
               </div>
-              )}
             </div>
+            )}
           </div>
 
           {/* Sticky footer */}
-          <div className="admin-modal-v2-footer" style={{ padding: "1rem 1.75rem", borderTop: "3px solid var(--dark)", background: "var(--cream)", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0, gap: "1rem" }}>
-            <button type="button" onClick={handleClose} className="btn-outline">
-              Annuleren
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="btn"
-              style={{ opacity: saving ? 0.55 : 1 }}
-            >
-              {saving ? "Opslaan..." : isCreating && !savedBeer ? "BIER AANMAKEN" : "OPSLAAN"}
-            </button>
+          <div className="admin-modal-v2-footer">
+            {step === 1 && (
+              <>
+                <button type="button" onClick={(e) => { e.preventDefault(); handleClose(); }} className="btn-outline">
+                  Annuleren
+                </button>
+                <button type="button" onClick={(e) => { e.preventDefault(); handleNext(); }} className="btn">
+                  Volgende →
+                </button>
+              </>
+            )}
+            {step === 2 && (
+              <>
+                <button type="button" onClick={(e) => { e.preventDefault(); setError(null); setStep(1); }} className="btn-outline">
+                  ← Vorige
+                </button>
+                <button type="button" onClick={(e) => { e.preventDefault(); handleNext(); }} className="btn">
+                  Volgende →
+                </button>
+              </>
+            )}
+            {step === 3 && (
+              <>
+                <button type="button" onClick={(e) => { e.preventDefault(); setError(null); setStep(2); }} className="btn-outline">
+                  ← Vorige
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="btn"
+                  style={{ opacity: saving ? 0.55 : 1 }}
+                >
+                  {saving ? "Opslaan..." : isCreating && !savedBeer ? "BIER AANMAKEN" : "OPSLAAN"}
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>

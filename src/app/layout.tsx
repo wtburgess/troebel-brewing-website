@@ -50,7 +50,7 @@ const organizationJsonLd = {
   "name": "Troebel Brewing Co.",
   "url": "https://troebelbrewing.be",
   "logo": "https://troebelbrewing.be/logo.jpg",
-  "email": "info@troebelbrewing.be",
+  "email": "Troebel.brew@gmail.com",
   "telephone": "+32-123-45-67-89",
   "priceRange": "€€",
   "servesCuisine": "Craft Beer",

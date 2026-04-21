@@ -155,7 +155,7 @@ export default async function Home() {
               <div style={{ padding: '1.5rem 0', fontSize: '.88rem', color: 'var(--mid)', lineHeight: 1.8 }}>
                 <strong style={{ fontSize: '1rem', color: 'var(--dark)' }}>Troebel Brewing</strong><br />
                 Congresstraat 22/01, 2060 Antwerpen<br />
-                <a href="mailto:info@troebelbrewing.be" style={{ color: 'var(--troebel-gold)', textDecoration: 'none', fontWeight: 700 }}>info@troebelbrewing.be</a>
+                <a href="mailto:Troebel.brew@gmail.com" style={{ color: 'var(--troebel-gold)', textDecoration: 'none', fontWeight: 700 }}>Troebel.brew@gmail.com</a>
               </div>
             </div>
             <div className="contact-form">

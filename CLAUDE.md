@@ -51,7 +51,7 @@ The middleware at `src/middleware.ts` guards `/admin/:path+` and `/api/admin/:pa
 
 Order confirmation + brewery alert emails are sent by the `send-order-email` Supabase Edge Function (`supabase/functions/send-order-email/`), triggered by a Postgres trigger (`tr_order_created_send_email`) on `public.orders` INSERT that calls the function via `pg_net.http_post`.
 
-SMTP delivery goes through **Gmail** using an app password. Customer-visible "From" is `Troebel Brewing <wotis.cloud@gmail.com>`; brewery alerts land in `info@troebelbrewing.be`.
+SMTP delivery goes through **Gmail** using an app password. Customer-visible "From" is `Troebel Brewing <wotis.cloud@gmail.com>`; brewery alerts land in `Troebel.brew@gmail.com`.
 
 **Secrets** (stored as Supabase Edge Function Secrets — encrypted at rest, set via the Supabase dashboard or Management API, never checked in):
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`

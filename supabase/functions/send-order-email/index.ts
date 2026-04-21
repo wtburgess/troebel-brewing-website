@@ -121,7 +121,7 @@ function buildConfirmationHtml(order: OrderEmailData): string {
 
       <p style="margin-top:24px;color:#555;font-size:14px;">
         We nemen binnenkort contact met je op om de afhaaltijd te bevestigen.<br>
-        Vragen? Mail ons op <a href="mailto:info@troebelbrewing.be" style="color:#D4A017;">info@troebelbrewing.be</a>
+        Vragen? Mail ons op <a href="mailto:Troebel.brew@gmail.com" style="color:#D4A017;">Troebel.brew@gmail.com</a>
       </p>
     </div>
 

@@ -45,7 +45,7 @@ The repo is already at `github.com/wtburgess/troebel-brewing-website`. If this i
 ### Gmail sender account (`wotis.cloud@gmail.com`)
 Order emails currently send from this Gmail account, owned by the previous developer. There are two options:
 
-- **Short term:** leave it alone. Emails work. Customers see "Troebel Brewing <wotis.cloud@gmail.com>" as the sender. The brewery receives order alerts at `info@troebelbrewing.be` regardless.
+- **Short term:** leave it alone. Emails work. Customers see "Troebel Brewing <wotis.cloud@gmail.com>" as the sender. The brewery receives order alerts at `Troebel.brew@gmail.com` regardless.
 - **Long term (recommended):** set up Gmail's *"Send mail as"* feature on the brewery's own Google Workspace / Gmail account with a verified `@troebelbrewing.be` address. Then update the `FROM_EMAIL` secret in Supabase (see §5 below). No code changes needed.
 
 See *§7 — Upgrade the email sender* for the exact steps.
@@ -150,7 +150,7 @@ Customer clicks "Bestellen" on /webshop
   → Edge function reads the order + items from the DB
   → Edge function sends two emails via Gmail SMTP:
       1. Confirmation to the customer
-      2. Alert to info@troebelbrewing.be
+      2. Alert to Troebel.brew@gmail.com
 ```
 
 Every component retries on failure except the Google Sheet log (it's fire-and-forget). If SMTP is down, the order is still saved in Supabase — you can re-send the email later from the DB.
@@ -166,7 +166,7 @@ Stored in **Supabase dashboard → Edge Functions → `send-order-email` → Sec
 | `SMTP_USER` | `wotis.cloud@gmail.com` |
 | `SMTP_PASS` | *(Gmail app password — encrypted, never displayed)* |
 | `FROM_EMAIL` | `Troebel Brewing <wotis.cloud@gmail.com>` |
-| `BREWERY_EMAIL` | `info@troebelbrewing.be` |
+| `BREWERY_EMAIL` | `Troebel.brew@gmail.com` |
 
 To rotate the Gmail app password: generate a new one at <https://myaccount.google.com/apppasswords> for that Google account, then update `SMTP_PASS` in the Supabase dashboard. No redeploy needed.
 
@@ -244,7 +244,66 @@ For any *"why did the order not save?"* question: the `orders` table in Supabase
 
 ---
 
-## 9. What you do NOT need to worry about
+## 9. AI agent tooling — skills & Supabase MCP (optional but nice)
+
+This repo ships with **pre-configured tooling for AI coding agents** (Claude Code, OpenCode, Cursor, etc.). You don't *need* it to run the site — the site is just Next.js and will deploy fine without any of this. But if your future developer uses an agent, these files save them 30 minutes of setup.
+
+### What's in the repo
+
+| Path | What it is |
+|---|---|
+| `.mcp.json` | Declares the **Supabase MCP server** for this project. An agent that reads `.mcp.json` gets tools for listing tables, running SQL, deploying edge functions, checking logs, etc. — all scoped to this Supabase project. |
+| `.agents/skills/supabase/` | Official **Supabase agent skill** (from [supabase/agent-skills](https://github.com/supabase/agent-skills)). Teaches the agent idiomatic Supabase patterns: queries, migrations, auth, storage, RLS, edge functions. |
+| `.agents/skills/supabase-postgres-best-practices/` | Postgres best-practices skill — indexing, RLS performance, schema design. |
+| `skills-lock.json` | Pins the above two skills to specific versions (like `package-lock.json` but for skills). |
+| `.claude/skills/` | **Not committed** (per-machine symlinks). Your agent recreates these automatically if it uses the skill system. |
+
+### Using with Claude Code
+
+1. Install Claude Code: <https://claude.com/claude-code>.
+2. `cd` into this repo, run `claude`.
+3. First run: Claude will prompt you to enable the Supabase MCP server declared in `.mcp.json`. Accept. It will ask for a **Supabase personal access token** — generate one at <https://supabase.com/dashboard/account/tokens> and paste it. This stays in Claude Code's local config, never in the repo.
+4. Skills load automatically — Claude picks them up from `.agents/skills/` (or re-symlinks into `.claude/skills/`).
+5. Now you can just say *"show me the orders table schema"* or *"write a migration that adds a `discount_cents` column"* and Claude uses the MCP + skills to do it correctly.
+
+### Using with OpenCode (or another MCP-compatible agent)
+
+OpenCode reads MCP server configs from its own config file, not from `.mcp.json`. Copy the server block into your OpenCode config:
+
+```jsonc
+// ~/.config/opencode/config.json (or wherever OpenCode keeps it)
+{
+  "mcpServers": {
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=wkbhgadmkucxjwidzsig"
+    }
+  }
+}
+```
+
+Skills: OpenCode doesn't have a skill package system identical to Claude Code's, but each skill is just a Markdown file at `.agents/skills/<name>/SKILL.md`. You can reference those files directly in prompts (*"read .agents/skills/supabase/SKILL.md and use that approach"*) or paste the relevant parts into your system prompt.
+
+### Updating skills to the latest version
+
+When Supabase ships updates to their agent skills, bump the hashes in `skills-lock.json`:
+
+```bash
+# If you use the skills CLI (npm install -g @agents/skills-cli or similar):
+skills update
+
+# Or manually re-fetch from https://github.com/supabase/agent-skills and commit.
+```
+
+Low priority — the pinned versions work fine.
+
+### If all of this is Greek to you
+
+Ignore it. Tell your developer "the previous dev committed `.mcp.json` and `.agents/skills/`, check `Handleiding/HANDOVER.md §9` if you use Claude Code or similar." They'll figure it out in 5 minutes.
+
+---
+
+## 10. What you do NOT need to worry about
 
 - **Servers, Docker, nginx, SSH** — there aren't any. The old developer used to self-host on a home server; that's gone.
 - **SSL certificates** — Vercel auto-issues and auto-renews via Let's Encrypt.
@@ -253,7 +312,7 @@ For any *"why did the order not save?"* question: the `orders` table in Supabase
 
 ---
 
-## 10. Contact & credentials to receive from the previous developer
+## 11. Contact & credentials to receive from the previous developer
 
 Before the previous developer signs off, make sure you have:
 

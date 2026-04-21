@@ -19,7 +19,7 @@ export default function Footer() {
           <Link href="/admin">Beheer</Link>
         </div>
         <div className="footer-col">
-          <h5>Contact</h5><p>Congresstraat 22/01</p><p>2060 Antwerpen, België</p><a href="mailto:info@troebelbrewing.be">info@troebelbrewing.be</a><a href="https://instagram.com/troebelbrewing" target="_blank" rel="noreferrer">@troebelbrewing</a>
+          <h5>Contact</h5><p>Congresstraat 22/01</p><p>2060 Antwerpen, België</p><a href="mailto:Troebel.brew@gmail.com">Troebel.brew@gmail.com</a><a href="https://instagram.com/troebelbrewing" target="_blank" rel="noreferrer">@troebelbrewing</a>
         </div>
       </div>
       <div className="footer-bottom">

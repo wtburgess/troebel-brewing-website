@@ -112,27 +112,19 @@ function rowToVariant(row: Record<string, unknown>): BeerVariant {
 // Beer CRUD
 // ----------------------------------------------------------------
 
-/**
- * Upload an image to Supabase Storage and return its public URL.
- * Uses the browser client (anon key) so it works from client components.
- * Requires the beer-images bucket to have public read access and
- * insert/update permissions for the desired role.
- */
-async function uploadImageFile(file: File, beerId: string): Promise<string | undefined> {
-  try {
-    const supabase = createClient();
-    const ext = file.name.split('.').pop() ?? 'jpg';
-    const path = `beers/${beerId}.${ext}`;
-    const { error } = await supabase.storage
-      .from('beer-images')
-      .upload(path, file, { upsert: true });
-    if (error) throw error;
-    const { data } = supabase.storage.from('beer-images').getPublicUrl(path);
-    return data.publicUrl;
-  } catch (err) {
-    console.error('[admin] Image upload failed:', err);
-    return undefined;
+async function uploadImageFile(file: File, beerId: string): Promise<string> {
+  const supabase = createClient();
+  const ext = (file.name.split('.').pop() ?? 'jpg').toLowerCase();
+  const path = `beers/${beerId}.${ext}`;
+  const { error } = await supabase.storage
+    .from('beer-images')
+    .upload(path, file, { upsert: true, contentType: file.type });
+  if (error) {
+    throw new Error(`Afbeelding uploaden mislukt: ${error.message}`);
   }
+  const { data } = supabase.storage.from('beer-images').getPublicUrl(path);
+  // Cache-bust so a replaced image refreshes in the browser.
+  return `${data.publicUrl}?v=${Date.now()}`;
 }
 
 export async function createBeer(
@@ -142,7 +134,6 @@ export async function createBeer(
   try {
     const supabase = createClient();
 
-    // Insert the beer first to get the ID, then upload image if provided
     const { data: row, error } = await supabase
       .from('beers')
       .insert(toSnake(data))
@@ -152,13 +143,20 @@ export async function createBeer(
     if (error) throw error;
 
     const newId = (row as Record<string, unknown>).id as string;
-    let imageUrl: string | undefined;
 
     if (imageFile) {
-      imageUrl = await uploadImageFile(imageFile, newId);
-      if (imageUrl) {
-        await supabase.from('beers').update({ image_url: imageUrl }).eq('id', newId);
+      try {
+        const imageUrl = await uploadImageFile(imageFile, newId);
+        const { error: updateErr } = await supabase
+          .from('beers')
+          .update({ image_url: imageUrl })
+          .eq('id', newId);
+        if (updateErr) throw updateErr;
         (row as Record<string, unknown>).image_url = imageUrl;
+      } catch (uploadErr) {
+        // Beer row exists but image failed — roll back so admin can retry cleanly.
+        await supabase.from('beers').delete().eq('id', newId);
+        throw uploadErr;
       }
     }
 

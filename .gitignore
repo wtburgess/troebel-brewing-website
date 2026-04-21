@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Obsidian settings (local only)
 .obsidian/
+
+# per-machine Claude Code skill symlinks (skills themselves live in .agents/skills/)
+.claude/skills/
