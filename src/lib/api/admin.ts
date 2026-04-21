@@ -38,7 +38,6 @@ export interface CreateVariantData {
   size: string;
   label: string;
   price: number;
-  stock: number;
   isAvailable: boolean;
   sortOrder?: number;
 }
@@ -103,9 +102,8 @@ function rowToVariant(row: Record<string, unknown>): BeerVariant {
     size: (row.size as string) ?? '',
     label: row.label as string,
     price: row.price as number,
-    stock: row.stock as number,
     volumeMl: (row.volume_ml as number) ?? 0,
-    isAvailable: (row.is_available as boolean) && (row.stock as number) > 0,
+    isAvailable: row.is_available as boolean,
     sortOrder: (row.sort_order as number) ?? 0,
   };
 }
@@ -227,7 +225,6 @@ export async function createVariant(
         size: data.size,
         label: data.label,
         price: data.price,
-        stock: data.stock,
         is_available: data.isAvailable,
         sort_order: data.sortOrder ?? 0,
       })
@@ -252,7 +249,6 @@ export async function updateVariant(
     if (data.size !== undefined) update.size = data.size;
     if (data.label !== undefined) update.label = data.label;
     if (data.price !== undefined) update.price = data.price;
-    if (data.stock !== undefined) update.stock = data.stock;
     if (data.isAvailable !== undefined) update.is_available = data.isAvailable;
     if (data.sortOrder !== undefined) update.sort_order = data.sortOrder;
 
@@ -281,32 +277,6 @@ export async function deleteVariant(id: string): Promise<{ success: boolean; err
   }
 }
 
-export async function adjustStock(
-  variantId: string,
-  adjustment: number
-): Promise<{ success: boolean; newStock?: number; error?: string }> {
-  try {
-    const supabase = createClient();
-    const { data: row, error: fetchError } = await supabase
-      .from('beer_variants')
-      .select('stock, is_available')
-      .eq('id', variantId)
-      .single();
-
-    if (fetchError) throw fetchError;
-
-    const newStock = Math.max(0, (row.stock as number) + adjustment);
-    const { error: updateError } = await supabase
-      .from('beer_variants')
-      .update({ stock: newStock, is_available: (row.is_available as boolean) && newStock > 0 })
-      .eq('id', variantId);
-
-    if (updateError) throw updateError;
-    return { success: true, newStock };
-  } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : 'Failed to adjust stock' };
-  }
-}
 
 export async function toggleAvailability(
   variantId: string
@@ -369,9 +339,9 @@ export async function createDefaultVariants(
   bottlePrice: number
 ): Promise<{ success: boolean; variants?: BeerVariant[]; error?: string }> {
   const defaults: Omit<CreateVariantData, 'beer'>[] = [
-    { type: 'bottle', size: '33cl', label: 'Flesje 33cl', price: bottlePrice, stock: 100, isAvailable: true, sortOrder: 0 },
-    { type: 'crate', size: '24x33cl', label: 'Bak 24 stuks', price: Math.round(bottlePrice * 24 * 0.9 * 100) / 100, stock: 5, isAvailable: true, sortOrder: 1 },
-    { type: 'keg', size: '20L', label: 'Vat 20L', price: Math.round(bottlePrice * 60 * 0.85 * 100) / 100, stock: 2, isAvailable: true, sortOrder: 2 },
+    { type: 'bottle', size: '33cl', label: 'Flesje 33cl', price: bottlePrice, isAvailable: true, sortOrder: 0 },
+    { type: 'crate', size: '24x33cl', label: 'Bak 24 stuks', price: Math.round(bottlePrice * 24 * 0.9 * 100) / 100, isAvailable: true, sortOrder: 1 },
+    { type: 'keg', size: '20L', label: 'Vat 20L', price: Math.round(bottlePrice * 60 * 0.85 * 100) / 100, isAvailable: true, sortOrder: 2 },
   ];
 
   const created: BeerVariant[] = [];

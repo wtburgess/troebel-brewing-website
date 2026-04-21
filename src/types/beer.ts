@@ -32,7 +32,6 @@ export interface BeerVariant {
   size: string;           // "33cl", "24x33cl", "20L"
   label: string;          // "Flesje 33cl", "Bak 24 stuks", "Vat 20L"
   price: number;
-  stock: number;
   volumeMl: number;
   isAvailable: boolean;
   sortOrder: number;
@@ -118,5 +117,5 @@ export function getLowestPrice(beer: Beer): number {
 
 // Helper to check if beer has any available variants
 export function hasAvailableVariants(beer: Beer): boolean {
-  return beer.variants.some(v => v.isAvailable && v.stock > 0);
+  return beer.variants.some(v => v.isAvailable);
 }

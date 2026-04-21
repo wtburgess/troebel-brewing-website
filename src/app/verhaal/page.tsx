@@ -1,7 +1,36 @@
-"use client";
-
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Ons verhaal | Troebel Brewing Co.",
+  description: "Van garagebouwerij tot craft brewery. Het eerlijke verhaal achter Troebel Brewing Co. uit Antwerpen.",
+  openGraph: {
+    title: "Ons verhaal | Troebel Brewing Co.",
+    description: "Van garagebouwerij tot craft brewery. Het eerlijke verhaal achter Troebel Brewing Co. uit Antwerpen.",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Troebel Brewing Co." }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ons verhaal | Troebel Brewing Co.",
+    description: "Van garagebouwerij tot craft brewery. Het eerlijke verhaal achter Troebel Brewing Co. uit Antwerpen.",
+  },
+};
+
+const aboutPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "Ons verhaal | Troebel Brewing Co.",
+  "description": "Van garagebouwerij tot craft brewery. Het eerlijke verhaal achter Troebel Brewing Co. uit Antwerpen.",
+  "url": "https://troebelbrewing.be/verhaal/",
+  "mainEntity": {
+    "@type": "Organization",
+    "name": "Troebel Brewing Co.",
+    "foundingDate": "2022",
+    "foundingLocation": "Antwerpen, België",
+  },
+};
+
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
@@ -52,6 +81,10 @@ const philosophy = [
 export default function VerhaalPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageJsonLd) }}
+      />
       <Header />
 
       <main className="pt-[100px]">

@@ -42,7 +42,6 @@ interface SupabaseVariant {
   size: string | null;
   label: string;
   price: number;
-  stock: number;
   volume_ml: number | null;
   is_available: boolean;
   sort_order: number;
@@ -59,9 +58,8 @@ function transformVariant(row: SupabaseVariant): BeerVariant {
     size: row.size ?? '',
     label: row.label,
     price: row.price,
-    stock: row.stock,
     volumeMl: row.volume_ml ?? 0,
-    isAvailable: row.is_available && row.stock > 0,
+    isAvailable: row.is_available,
     sortOrder: row.sort_order,
   };
 }
@@ -110,7 +108,6 @@ function addDefaultVariant(staticBeer: (typeof staticBeers)[0]): Beer {
     size: '33cl',
     label: 'Flesje 33cl',
     price: staticBeer.price,
-    stock: staticBeer.isAvailable ? 100 : 0,
     volumeMl: 330,
     isAvailable: staticBeer.isAvailable,
     sortOrder: 0,
@@ -227,49 +224,3 @@ export async function getAllBeerSlugs(): Promise<string[]> {
   }
 }
 
-export async function updateVariantStock(variantId: string, newStock: number): Promise<boolean> {
-  try {
-    const supabase = getSupabaseClient();
-    const { error } = await supabase
-      .from('beer_variants')
-      .update({ stock: newStock, is_available: newStock > 0 })
-      .eq('id', variantId);
-
-    if (error) throw error;
-    return true;
-  } catch (error) {
-    console.error('Failed to update variant stock:', error);
-    return false;
-  }
-}
-
-export async function decrementStock(
-  items: Array<{ variantId: string; quantity: number }>
-): Promise<boolean> {
-  try {
-    const supabase = getSupabaseClient();
-
-    for (const item of items) {
-      const { data: variant, error: fetchError } = await supabase
-        .from('beer_variants')
-        .select('stock')
-        .eq('id', item.variantId)
-        .single();
-
-      if (fetchError) throw fetchError;
-
-      const newStock = Math.max(0, (variant.stock as number) - item.quantity);
-      const { error: updateError } = await supabase
-        .from('beer_variants')
-        .update({ stock: newStock, is_available: newStock > 0 })
-        .eq('id', item.variantId);
-
-      if (updateError) throw updateError;
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Failed to decrement stock:', error);
-    return false;
-  }
-}

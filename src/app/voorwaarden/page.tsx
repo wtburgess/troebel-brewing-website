@@ -1,10 +1,18 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-export const metadata = {
-  title: "Algemene voorwaarden — Troebel Brewing Co.",
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Algemene voorwaarden | Troebel Brewing Co.",
   description:
     "Algemene voorwaarden voor de webshop van Troebel Brewing Co. — bestellingen, afhaling, herroeping en privacy.",
+  openGraph: {
+    title: "Algemene voorwaarden | Troebel Brewing Co.",
+    description:
+      "Algemene voorwaarden voor de webshop van Troebel Brewing Co. — bestellingen, afhaling, herroeping en privacy.",
+  },
+  robots: { index: false, follow: true },
 };
 
 export default function VoorwaardenPage() {

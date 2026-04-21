@@ -33,64 +33,55 @@ export default function DeleteConfirmModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-[3000] flex items-center justify-center">
       <div
-        className="absolute inset-0 bg-black/60"
+        className="absolute inset-0 bg-black/70"
         onClick={!isDeleting ? handleClose : undefined}
       />
 
-      {/* Modal */}
-      <div
-        className="relative bg-white w-full max-w-md mx-4 border-4 border-dark"
-        style={{ boxShadow: "8px 8px 0px var(--color-red, #ef4444)" }}
-      >
+      <div className="admin-delete-modal relative w-full max-w-md mx-4">
         {/* Header */}
-        <div className="bg-red-500 text-white px-6 py-4">
-          <h2 className="font-heading text-xl">BIER VERWIJDEREN</h2>
+        <div className="admin-delete-header">
+          <span style={{ fontFamily: "var(--font-h)", fontSize: "1rem", color: "var(--troebel-gold)" }}>
+            pas op!
+          </span>
+          <h2 style={{ fontFamily: "var(--font-d)", fontSize: "1.5rem", textTransform: "uppercase", color: "var(--warm-white)", marginTop: ".2rem" }}>
+            Bier Verwijderen
+          </h2>
         </div>
 
-        {/* Content */}
-        <div className="p-6">
-          {/* Warning Icon */}
-          <div className="text-center mb-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 text-red-500 text-4xl rounded-full mb-4">
-              !
-            </div>
-          </div>
-
-          <p className="font-body text-center text-gray-700 mb-2">
+        <div className="admin-delete-body">
+          <p style={{ fontFamily: "var(--font-b)", textAlign: "center", color: "var(--mid)", marginBottom: ".5rem" }}>
             Je staat op het punt om
           </p>
-          <p className="font-heading text-xl text-center text-dark mb-4">
+          <p style={{ fontFamily: "var(--font-d)", fontSize: "1.3rem", textAlign: "center", textTransform: "uppercase", color: "var(--dark)", marginBottom: ".75rem" }}>
             &quot;{beerName}&quot;
           </p>
-          <p className="font-body text-center text-gray-600 mb-6">
-            te verwijderen. Dit verwijdert ook alle varianten (flesjes, bakken,
-            vaten) en kan <strong>niet ongedaan</strong> worden gemaakt.
+          <p style={{ fontFamily: "var(--font-b)", fontSize: ".875rem", textAlign: "center", color: "var(--mid)", marginBottom: "1.5rem", lineHeight: 1.6 }}>
+            te verwijderen. Dit verwijdert ook alle varianten en kan{" "}
+            <strong style={{ color: "var(--dark)" }}>niet ongedaan</strong> worden gemaakt.
           </p>
 
-          {/* Confirmation Checkbox */}
-          <label className="flex items-center gap-3 p-4 bg-red-50 border-2 border-red-200 cursor-pointer mb-6 hover:bg-red-100 transition-colors">
+          <label className="admin-delete-confirm-check">
             <input
               type="checkbox"
               checked={confirmed}
               onChange={(e) => setConfirmed(e.target.checked)}
               disabled={isDeleting}
-              className="w-5 h-5 border-2 border-red-500 accent-red-500"
+              style={{ width: 18, height: 18, flexShrink: 0, accentColor: "#dc2626" }}
             />
-            <span className="font-body text-sm text-red-800">
-              Ja, ik weet zeker dat ik dit bier wil verwijderen
+            <span style={{ fontFamily: "var(--font-b)", fontSize: ".875rem", color: "#991b1b" }}>
+              Ja, ik wil dit bier permanent verwijderen
             </span>
           </label>
 
-          {/* Actions */}
-          <div className="flex gap-4">
+          <div style={{ display: "flex", gap: ".75rem", marginTop: "1.5rem" }}>
             <button
               type="button"
               onClick={handleClose}
               disabled={isDeleting}
-              className="flex-1 px-4 py-3 font-heading text-dark border-2 border-dark hover:bg-gray-100 transition-colors disabled:opacity-50"
+              className="btn-outline"
+              style={{ flex: 1, justifyContent: "center", opacity: isDeleting ? .5 : 1 }}
             >
               Annuleren
             </button>
@@ -98,10 +89,8 @@ export default function DeleteConfirmModal({
               type="button"
               onClick={handleConfirm}
               disabled={!confirmed || isDeleting}
-              className="flex-1 px-4 py-3 font-heading text-white bg-red-500 border-2 border-red-600 hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                boxShadow: confirmed ? "4px 4px 0px var(--color-dark)" : "none",
-              }}
+              className="admin-delete-btn"
+              style={{ flex: 1, opacity: (!confirmed || isDeleting) ? .5 : 1, cursor: (!confirmed || isDeleting) ? "not-allowed" : "pointer" }}
             >
               {isDeleting ? "Verwijderen..." : "Verwijderen"}
             </button>

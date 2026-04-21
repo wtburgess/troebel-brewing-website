@@ -34,11 +34,8 @@ interface Order {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("nl-BE", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
   });
 }
 
@@ -62,7 +59,6 @@ export default function AdminBestellingenPage() {
         .from("orders")
         .select("*, order_items(*)")
         .order("created_at", { ascending: false });
-
       if (fetchError) throw fetchError;
       setOrders((data as Order[]) ?? []);
     } catch (err) {
@@ -73,17 +69,11 @@ export default function AdminBestellingenPage() {
     }
   }, []);
 
-  useEffect(() => {
-    const isAuth = sessionStorage.getItem("troebel-admin-auth");
-    if (isAuth !== "true") {
-      router.push("/admin");
-      return;
-    }
-    loadOrders();
-  }, [router, loadOrders]);
+  useEffect(() => { loadOrders(); }, [loadOrders]);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("troebel-admin-auth");
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
     router.push("/admin");
   };
 
@@ -97,9 +87,7 @@ export default function AdminBestellingenPage() {
       });
       if (!res.ok) throw new Error("Update failed");
       setOrders((prev) =>
-        prev.map((o) =>
-          o.id === order.id ? { ...o, is_processed: !o.is_processed } : o
-        )
+        prev.map((o) => o.id === order.id ? { ...o, is_processed: !o.is_processed } : o)
       );
     } catch {
       alert("Kon status niet bijwerken.");
@@ -119,161 +107,150 @@ export default function AdminBestellingenPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-dark flex items-center justify-center">
-        <p className="text-white font-body text-lg">Laden...</p>
+        <p className="text-warm-white" style={{ fontFamily: "var(--font-d)", fontSize: "1.5rem", textTransform: "uppercase", letterSpacing: ".1em" }}>
+          Laden...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream">
-      {/* Top bar */}
-      <header className="bg-dark text-white px-6 py-4 flex items-center justify-between sticky top-0 z-10 border-b-2 border-primary">
-        <div className="flex items-center gap-6">
-          <span className="font-heading text-xl text-primary">TROEBEL ADMIN</span>
-          <nav className="flex gap-4 text-sm font-body">
-            <Link href="/admin/bieren" className="text-white/70 hover:text-white transition-colors">
+    <div className="admin-page">
+      {/* ── Top Nav ── */}
+      <nav className="admin-nav">
+        <div className="admin-nav-left">
+          <Link href="/admin/bieren" className="admin-nav-brand">
+            <span className="admin-nav-logo">TROEBEL</span>
+            <span className="admin-nav-tag">/ admin</span>
+          </Link>
+          <div className="admin-nav-links">
+            <Link href="/admin/bieren" className="admin-nav-link">
               Bieren
             </Link>
-            <span className="text-primary font-bold border-b-2 border-primary pb-0.5">Bestellingen</span>
-          </nav>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="text-sm font-body text-white/60 hover:text-white transition-colors"
-        >
-          Uitloggen
-        </button>
-      </header>
-
-      <div className="max-w-[1400px] mx-auto px-6 py-10">
-        {/* Title + stats */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-          <div>
-            <h1 className="font-heading text-4xl text-dark uppercase tracking-wide">
+            <Link href="/admin/bestellingen" className="admin-nav-link admin-nav-link--active">
               Bestellingen
-            </h1>
-            <p className="font-body text-gray-500 mt-1">
-              {orders.length} totaal · {openCount} te verwerken
-            </p>
-          </div>
-
-          {/* Filter */}
-          <div className="flex gap-2">
-            {(["all", "open", "done"] as const).map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilterProcessed(f)}
-                className={`px-4 py-2 border-2 border-dark font-body font-bold text-sm transition-all ${
-                  filterProcessed === f
-                    ? "bg-dark text-white"
-                    : "bg-white text-dark hover:bg-primary/10"
-                }`}
-              >
-                {f === "all" ? "Alle" : f === "open" ? "Te verwerken" : "Verwerkt"}
-              </button>
-            ))}
+            </Link>
+            <Link href="/" target="_blank" className="admin-nav-link">
+              ↗ Site
+            </Link>
           </div>
         </div>
+        <div className="admin-nav-right">
+          <span className="admin-nav-email">admin@troebel.be</span>
+          <button onClick={handleLogout} className="btn-outline admin-nav-logout">
+            Uitloggen
+          </button>
+        </div>
+      </nav>
 
-        {error && (
-          <div className="bg-red-50 border-2 border-red-500 text-red-700 p-4 mb-6 font-body">
-            {error}
+      {/* ── Main Content ── */}
+      <div className="admin-body">
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          {/* Page Header */}
+          <div className="admin-page-header" style={{ marginBottom: "2rem" }}>
+            <div>
+              <span className="section-label" style={{ fontSize: ".85rem" }}>admin / bestellingen</span>
+              <h1 className="admin-page-title">Bestellingen</h1>
+              <p style={{ fontFamily: "var(--font-b)", fontSize: ".9rem", color: "var(--mid)", marginTop: ".3rem" }}>
+                {orders.length} totaal · {openCount} te verwerken
+              </p>
+            </div>
+            {/* Filter Pills */}
+            <div style={{ display: "flex", gap: ".5rem", flexWrap: "wrap" }}>
+              {(["all", "open", "done"] as const).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilterProcessed(f)}
+                  className={filterProcessed === f ? "admin-filter-btn admin-filter-btn--active" : "admin-filter-btn"}
+                >
+                  {f === "all" ? "Alle" : f === "open" ? "Te verwerken" : "Verwerkt"}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
 
-        {filteredOrders.length === 0 ? (
-          <div className="bg-white border-2 border-dark p-12 text-center shadow-[6px_6px_0_#1C1C1C]">
-            <p className="font-heading text-2xl text-dark/50">Geen bestellingen gevonden</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredOrders.map((order) => (
-              <div
-                key={order.id}
-                className={`bg-white border-2 border-dark p-6 shadow-[4px_4px_0_#1C1C1C] transition-all ${
-                  order.is_processed ? "opacity-60" : ""
-                }`}
-              >
-                <div className="flex flex-col lg:flex-row lg:items-start gap-4">
-                  {/* Left: meta */}
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span className="font-heading text-xl text-primary">{order.order_number}</span>
-                      <span
-                        className={`text-xs font-body font-bold px-2 py-0.5 border ${
-                          order.is_processed
-                            ? "border-green-500 text-green-700 bg-green-50"
-                            : "border-orange-400 text-orange-700 bg-orange-50"
-                        }`}
-                      >
-                        {order.is_processed ? "Verwerkt" : "Open"}
-                      </span>
-                      <span className="text-xs font-body text-gray-400">{formatDate(order.created_at)}</span>
-                    </div>
+          {error && (
+            <div className="admin-error-banner">
+              <p>{error}</p>
+            </div>
+          )}
 
-                    <p className="font-body font-bold text-dark text-lg">{order.customer_name}</p>
-                    <p className="font-body text-gray-500 text-sm">
-                      {order.customer_email}
-                      {order.customer_phone && ` · ${order.customer_phone}`}
-                    </p>
-                    <p className="font-body text-sm text-gray-500">
-                      <span className="font-bold">{order.fulfillment === "pickup" ? "Afhalen" : "Verzending"}</span>
-                      {" · "}
-                      {order.customer_type}
-                    </p>
+          {filteredOrders.length === 0 ? (
+            <div className="admin-table-wrap" style={{ padding: "3rem", textAlign: "center" }}>
+              <p style={{ fontFamily: "var(--font-d)", fontSize: "1.5rem", textTransform: "uppercase", color: "var(--mid)" }}>
+                Geen bestellingen gevonden
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {filteredOrders.map((order) => (
+                <div
+                  key={order.id}
+                  className={`admin-order-card${order.is_processed ? " admin-order-card--done" : ""}`}
+                >
+                  <div className="admin-order-inner">
+                    {/* Left: meta */}
+                    <div style={{ flex: 1 }}>
+                      <div className="admin-order-header-row">
+                        <span className="admin-order-number">{order.order_number}</span>
+                        <span className={order.is_processed ? "admin-badge admin-badge--verwerkt" : "admin-badge admin-badge--open"}>
+                          {order.is_processed ? "Verwerkt" : "Open"}
+                        </span>
+                        <span className="admin-order-date">{formatDate(order.created_at)}</span>
+                      </div>
 
-                    {/* Items */}
-                    <div className="mt-3 space-y-1">
-                      {order.order_items.map((item) => (
-                        <div key={item.id} className="flex items-center gap-2 text-sm font-body text-gray-700">
-                          <span className="w-6 h-6 bg-dark text-primary flex items-center justify-center text-xs font-bold flex-shrink-0">
-                            {item.quantity}
-                          </span>
-                          <span>
-                            {item.beer_name} — {item.variant_label}
-                          </span>
-                          <span className="text-gray-400 ml-auto">{formatCurrency(item.total_incl_vat)}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {order.notes && (
-                      <p className="mt-2 text-sm font-body text-gray-500 italic">
-                        Nota: {order.notes}
+                      <p className="admin-order-customer">{order.customer_name}</p>
+                      <p className="admin-order-contact">
+                        {order.customer_email}
+                        {order.customer_phone && ` · ${order.customer_phone}`}
                       </p>
-                    )}
-                  </div>
+                      <p className="admin-order-meta">
+                        <strong>{order.fulfillment === "pickup" ? "Afhalen" : "Verzending"}</strong>
+                        {" · "}
+                        {order.customer_type}
+                      </p>
 
-                  {/* Right: totals + toggle */}
-                  <div className="flex flex-row lg:flex-col items-center lg:items-end gap-4 lg:gap-2 flex-shrink-0">
-                    <div className="text-right">
-                      <p className="font-body text-xs text-gray-400">excl. BTW</p>
-                      <p className="font-body text-sm text-gray-600">{formatCurrency(order.total_excl_vat)}</p>
-                      <p className="font-body text-xs text-gray-400 mt-1">incl. BTW</p>
-                      <p className="font-heading text-2xl text-dark">{formatCurrency(order.total_incl_vat)}</p>
+                      <div className="admin-order-items">
+                        {order.order_items.map((item) => (
+                          <div key={item.id} className="admin-order-item">
+                            <span className="admin-order-qty">{item.quantity}</span>
+                            <span>{item.beer_name} — {item.variant_label}</span>
+                            <span className="admin-order-item-price">{formatCurrency(item.total_incl_vat)}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {order.notes && (
+                        <p className="admin-order-notes">Nota: {order.notes}</p>
+                      )}
                     </div>
 
-                    <button
-                      onClick={() => toggleProcessed(order)}
-                      disabled={toggling === order.id}
-                      className={`px-4 py-2 border-2 font-body font-bold text-sm transition-all disabled:opacity-50 ${
-                        order.is_processed
-                          ? "border-gray-400 text-gray-500 hover:border-dark hover:text-dark"
-                          : "border-dark bg-dark text-white hover:bg-primary hover:text-dark hover:border-primary"
-                      }`}
-                    >
-                      {toggling === order.id
-                        ? "..."
-                        : order.is_processed
-                        ? "↩ Heropen"
-                        : "✓ Verwerkt"}
-                    </button>
+                    {/* Right: totals + toggle */}
+                    <div className="admin-order-right">
+                      <div className="admin-order-totals">
+                        <div className="admin-order-total-row">
+                          <span>excl. BTW</span>
+                          <span>{formatCurrency(order.total_excl_vat)}</span>
+                        </div>
+                        <div className="admin-order-total-final">
+                          {formatCurrency(order.total_incl_vat)}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => toggleProcessed(order)}
+                        disabled={toggling === order.id}
+                        className={order.is_processed ? "admin-order-toggle admin-order-toggle--reopen" : "admin-order-toggle admin-order-toggle--process"}
+                      >
+                        {toggling === order.id ? "..." : order.is_processed ? "↩ Heropen" : "✓ Verwerkt"}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

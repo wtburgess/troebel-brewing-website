@@ -1,0 +1,9 @@
+-- One-time admin user setup.
+-- Do NOT run this SQL directly — Supabase Auth users cannot be created via raw SQL.
+--
+-- Instead, create the user manually in the Supabase dashboard:
+--   Authentication → Users → Add user
+--   Email:    admin@troebel.be
+--   Password: (choose a strong password)
+--
+-- After creating the user, the /admin login page will work immediately.

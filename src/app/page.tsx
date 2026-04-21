@@ -1,9 +1,25 @@
+import type { Metadata } from "next";
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import HomepageBeers from '@/components/sections/HomepageBeers';
 import { getFeaturedBeers } from '@/lib/api/beers';
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "Troebel Brewing Co. | Hopmerkelijke Brouwsels uit Antwerpen",
+  description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter. Gebrouwen door vrienden, voor vrienden.",
+  openGraph: {
+    title: "Troebel Brewing Co. | Hopmerkelijke Brouwsels uit Antwerpen",
+    description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter.",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Troebel Brewing Co." }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Troebel Brewing Co. | Hopmerkelijke Brouwsels uit Antwerpen",
+    description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter.",
+  },
+};
 
 export default async function Home() {
   const featured = await getFeaturedBeers();
