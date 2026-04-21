@@ -1,8 +1,27 @@
-import { Resend } from 'resend';
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "supabase";
+import { SMTPClient } from "denomailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+interface OrderRecord {
+  id: string;
+  order_number: string;
+  customer_name: string;
+  customer_email: string;
+  fulfillment: string;
+  total_excl_vat: number;
+  vat_amount: number;
+  total_incl_vat: number;
+}
 
-export interface OrderEmailData {
+interface OrderItemRow {
+  beer_name: string;
+  variant_label: string;
+  quantity: number;
+  unit_price: number;
+  total_incl_vat: number;
+}
+
+interface OrderEmailData {
   orderNumber: string;
   customerName: string;
   customerEmail: string;
@@ -64,13 +83,11 @@ function buildConfirmationHtml(order: OrderEmailData): string {
 <head><meta charset="UTF-8"><title>Bestelbevestiging ${order.orderNumber}</title></head>
 <body style="margin:0;padding:0;background:#f5f5f5;font-family:sans-serif;">
   <div style="max-width:600px;margin:40px auto;background:#fff;border:2px solid #1C1C1C;box-shadow:6px 6px 0 #D4A017;">
-    <!-- Header -->
     <div style="background:#1C1C1C;padding:32px 40px;text-align:center;">
       <h1 style="color:#D4A017;font-size:28px;margin:0;letter-spacing:2px;">TROEBEL BREWING</h1>
       <p style="color:#fff;margin:8px 0 0;font-size:14px;">Bestelbevestiging</p>
     </div>
 
-    <!-- Body -->
     <div style="padding:32px 40px;">
       <p style="font-size:16px;color:#1C1C1C;">Dag ${order.customerName},</p>
       <p style="color:#555;">Bedankt voor je bestelling! We hebben alles goed ontvangen.</p>
@@ -108,7 +125,6 @@ function buildConfirmationHtml(order: OrderEmailData): string {
       </p>
     </div>
 
-    <!-- Footer -->
     <div style="background:#1C1C1C;padding:20px 40px;text-align:center;">
       <p style="color:#fff;font-size:12px;margin:0;">© ${new Date().getFullYear()} Troebel Brewing Co. — Antwerpen</p>
     </div>
@@ -129,31 +145,104 @@ function buildBreweryAlertHtml(order: OrderEmailData): string {
   ${buildItemsTable(order.items)}
   <p><strong>Totaal incl. BTW:</strong> ${formatCurrency(order.totalInclVat)}</p>
   <hr>
-  <p style="font-size:12px;color:#999;">Verwerk via <a href="https://troebel.wotis-cloud.com/admin/bestellingen">admin/bestellingen</a></p>
+  <p style="font-size:12px;color:#999;">Verwerk via <a href="https://troebelbrewing.be/admin/bestellingen">admin/bestellingen</a></p>
 </body>
 </html>`;
 }
 
-export async function sendOrderEmail(order: OrderEmailData): Promise<void> {
-  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'REPLACE_ME_RESEND_KEY') {
-    console.warn('[email] RESEND_API_KEY not configured — skipping email send');
-    return;
-  }
+Deno.serve(async (req: Request) => {
+  try {
+    const payload = await req.json() as {
+      type: string;
+      table: string;
+      schema: string;
+      record: OrderRecord;
+    };
 
-  await Promise.all([
-    // Confirmation to customer
-    resend.emails.send({
-      from: 'Troebel Brewing <bestellingen@troebelbrewing.be>',
-      to: order.customerEmail,
-      subject: `Bestelbevestiging ${order.orderNumber} — Troebel Brewing`,
-      html: buildConfirmationHtml(order),
-    }),
-    // Alert to brewery
-    resend.emails.send({
-      from: 'Troebel Brewing <bestellingen@troebelbrewing.be>',
-      to: 'info@troebelbrewing.be',
-      subject: `Nieuwe bestelling ${order.orderNumber} — ${order.customerName}`,
-      html: buildBreweryAlertHtml(order),
-    }),
-  ]);
-}
+    if (payload.type !== "INSERT" || payload.table !== "orders") {
+      return new Response(JSON.stringify({ ok: true, skipped: true }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const record = payload.record;
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+
+    const { data: items, error: itemsError } = await supabase
+      .from("order_items")
+      .select("beer_name, variant_label, quantity, unit_price, total_incl_vat")
+      .eq("order_id", record.id);
+
+    if (itemsError) {
+      console.error("[send-order-email] Failed to fetch items:", itemsError);
+      return new Response(JSON.stringify({ error: "items_fetch_failed" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const orderData: OrderEmailData = {
+      orderNumber: record.order_number,
+      customerName: record.customer_name,
+      customerEmail: record.customer_email,
+      fulfillment: record.fulfillment,
+      items: (items as OrderItemRow[]).map((i) => ({
+        beerName: i.beer_name,
+        variantLabel: i.variant_label,
+        quantity: i.quantity,
+        unitPrice: Number(i.unit_price),
+        totalInclVat: Number(i.total_incl_vat),
+      })),
+      totalExclVat: Number(record.total_excl_vat),
+      vatAmount: Number(record.vat_amount),
+      totalInclVat: Number(record.total_incl_vat),
+    };
+
+    const client = new SMTPClient({
+      connection: {
+        hostname: Deno.env.get("SMTP_HOST")!,
+        port: Number(Deno.env.get("SMTP_PORT")!),
+        tls: true,
+        auth: {
+          username: Deno.env.get("SMTP_USER")!,
+          password: Deno.env.get("SMTP_PASS")!,
+        },
+      },
+    });
+
+    const from = Deno.env.get("FROM_EMAIL")!;
+    const breweryEmail = Deno.env.get("BREWERY_EMAIL")!;
+
+    try {
+      await client.send({
+        from,
+        to: orderData.customerEmail,
+        subject: `Bestelbevestiging ${orderData.orderNumber} — Troebel Brewing`,
+        html: buildConfirmationHtml(orderData),
+      });
+
+      await client.send({
+        from,
+        to: breweryEmail,
+        subject: `Nieuwe bestelling ${orderData.orderNumber} — ${orderData.customerName}`,
+        html: buildBreweryAlertHtml(orderData),
+      });
+    } finally {
+      await client.close();
+    }
+
+    return new Response(JSON.stringify({ ok: true }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    console.error("[send-order-email] Error:", err);
+    return new Response(
+      JSON.stringify({ error: String(err instanceof Error ? err.message : err) }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
+    );
+  }
+});

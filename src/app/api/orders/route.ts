@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
-import { sendOrderEmail } from '@/lib/email';
 import { appendToGoogleSheet } from '@/lib/sheets';
 
 const VAT_RATE = 0.21;
@@ -116,40 +115,9 @@ export async function POST(request: NextRequest) {
       // Order saved but items failed — still return success so customer isn't blocked
     }
 
-    // ── Decrement stock ───────────────────────────────────────────
-    for (const item of items) {
-      const { data: variant } = await supabase
-        .from('beer_variants')
-        .select('stock')
-        .eq('id', item.variant.id)
-        .single();
-
-      if (variant) {
-        const newStock = Math.max(0, (variant.stock as number) - item.quantity);
-        await supabase
-          .from('beer_variants')
-          .update({ stock: newStock, is_available: newStock > 0 })
-          .eq('id', item.variant.id);
-      }
-    }
-
     // ── Side effects (non-blocking) ───────────────────────────────
-    const emailData = {
-      orderNumber,
-      customerName: `${formData.firstName} ${formData.lastName}`.trim(),
-      customerEmail: formData.email,
-      fulfillment,
-      items: orderItems.map((i) => ({
-        beerName: i.beer_name,
-        variantLabel: i.variant_label,
-        quantity: i.quantity,
-        unitPrice: i.unit_price,
-        totalInclVat: i.total_incl_vat,
-      })),
-      totalExclVat,
-      vatAmount,
-      totalInclVat,
-    };
+    // Order emails are sent by the `send-order-email` Supabase Edge Function,
+    // triggered by a DB webhook on orders INSERT. No email call here.
 
     const sheetData = {
       orderNumber,
@@ -167,11 +135,8 @@ export async function POST(request: NextRequest) {
       notes: formData.notes,
     };
 
-    // Fire-and-forget — don't block the response on email/sheets
-    Promise.all([
-      sendOrderEmail(emailData).catch((e) => console.error('[orders] Email failed:', e)),
-      appendToGoogleSheet(sheetData).catch((e) => console.error('[orders] Sheet failed:', e)),
-    ]);
+    // Fire-and-forget — don't block the response on sheets
+    appendToGoogleSheet(sheetData).catch((e) => console.error('[orders] Sheet failed:', e));
 
     return NextResponse.json({ orderNumber });
   } catch (error) {
