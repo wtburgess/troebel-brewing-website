@@ -86,8 +86,8 @@ Loaded from Google Fonts.
 After approval:
 1. Set up Next.js 16 project
 2. Port these HTML designs to React components
-3. Connect to PocketBase API
-4. Add Mollie payment integration
+3. Connect to Supabase
+4. Add payment integration (if desired)
 
 ---
 

@@ -1,67 +1,97 @@
 # Troebel Brewing Co. - Project Context
 
 **Project:** Brewery website + webshop for Troebel Brewing Co.
-**Type:** Next.js 15 App Router + PocketBase backend
-**Status:** Phase C & D Complete - Production Rollout Next
+**Stack:** Next.js 15 (App Router) + Supabase (hosted) + Vercel
+**Status:** Phase C & D complete — ready for handover
+
+---
+
+## Architecture at a glance
+
+| Layer | Service | Notes |
+|---|---|---|
+| **Frontend + API routes** | Next.js 15 on **Vercel** | App Router, SSR |
+| **Database + Auth + Storage** | **Supabase** (hosted, project ref `wkbhgadmkucxjwidzsig`) | Postgres, Row-Level Security enforced |
+| **Order emails** | Supabase Edge Function `send-order-email` | Gmail SMTP, triggered by DB webhook on `orders` INSERT |
+| **Order log** | Google Sheets via Apps Script webhook | Best-effort, non-blocking |
+
+There is no self-hosted backend. Everything runs on managed services.
+
+---
+
+## Database Migrations
+
+Migrations live in `supabase/migrations/*.sql`. Write them AND apply them — don't leave SQL for the user to paste.
+
+Apply via one of:
+1. `npx supabase db push` (requires `supabase link` first; needs the DB password once).
+2. Supabase Management API — needs a Personal Access Token in `SUPABASE_ACCESS_TOKEN`:
+   ```bash
+   curl -X POST https://api.supabase.com/v1/projects/wkbhgadmkucxjwidzsig/database/query \
+     -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"query":"<sql>"}'
+   ```
+
+If neither is available, stop and ask for a PAT rather than dumping SQL on the user.
+
+---
+
+## Admin Auth
+
+Admin login uses Supabase Auth (email + password). Create the admin user once in the Supabase dashboard:
+
+> Authentication → Users → Add user → Email: `admin@troebel.be` → set a strong password
+
+The middleware at `src/middleware.ts` guards `/admin/:path+` and `/api/admin/:path*`. The login page itself (`/admin` root) is public.
+
+---
+
+## Order Emails
+
+Order confirmation + brewery alert emails are sent by the `send-order-email` Supabase Edge Function (`supabase/functions/send-order-email/`), triggered by a Postgres trigger (`tr_order_created_send_email`) on `public.orders` INSERT that calls the function via `pg_net.http_post`.
+
+SMTP delivery goes through **Gmail** using an app password. Customer-visible "From" is `Troebel Brewing <wotis.cloud@gmail.com>`; brewery alerts land in `info@troebelbrewing.be`.
+
+**Secrets** (stored as Supabase Edge Function Secrets — encrypted at rest, set via the Supabase dashboard or Management API, never checked in):
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`
+- `FROM_EMAIL`, `BREWERY_EMAIL`
+
+The Next.js API route (`src/app/api/orders/route.ts`) no longer sends email — only the Google Sheets log remains there.
+
+**Upgrade path:** once the brewery sets up "Send mail as" in Gmail for a verified `@troebelbrewing.be` address, just update `FROM_EMAIL` — no code change.
 
 ---
 
 ## Hosting & Deployment
 
-| Environment | URL | Port | Notes |
-|-------------|-----|------|-------|
-| **Production (FE only)** | troebel.wotis-cloud.com | 8056 | Static frontend, NO backend |
-| **Test Instance** | TBD | 8057 | For backend integration testing |
-| **PocketBase Admin** | http://192.168.1.63:8055/_/ | 8055 | Backend admin UI |
-| **Git Repository** | `ssh://git@192.168.1.63:2222/wouter/Troebel-brewing.git` | - | Gitea |
-| **Local Dev** | http://localhost:3000 | 3000 | `npm run dev` |
+| Environment | URL | Notes |
+|---|---|---|
+| **Production** | Vercel (connect the Git repo) | Next.js SSR |
+| **Local dev** | http://localhost:3000 | `npm run dev` |
 
-### Deployment Strategy
+Vercel env vars required (Settings → Environment Variables):
 
-**Phase E: Ready to deploy backend to production**
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `GOOGLE_SHEET_WEBHOOK_URL` (optional — order log)
 
-Current state:
-- `troebel.wotis-cloud.com` (port 8056) = static frontend (to be replaced)
-- PocketBase running at port 8055 (backend ready)
-
-Production rollout requires:
-1. Switch Dockerfile from static export to SSR (Node.js runtime)
-2. Configure environment variables for PocketBase URL
-3. Deploy new container to replace static site
-4. Set up admin access security (IP restriction or Cloudflare Access)
-
-### Docker Deployment (Current - Static)
-
-The site runs as a static export served by nginx in Docker.
-
-**Location on server:** `~/troebel-brewing/`
-
-**Redeploy commands:**
-```bash
-# From Windows - copy files and rebuild
-scp -r package.json package-lock.json Dockerfile docker-compose.yml nginx.conf next.config.ts tsconfig.json postcss.config.mjs eslint.config.mjs .dockerignore src public wouter@192.168.1.63:~/troebel-brewing/
-
-# On server - rebuild container
-ssh wouter@192.168.1.63 "cd ~/troebel-brewing && docker-compose down && docker-compose build --no-cache && docker-compose up -d"
-```
-
-**Quick status check:**
-```bash
-ssh wouter@192.168.1.63 "docker ps | grep troebel"
-```
+No `RESEND_API_KEY` / no SMTP vars here — email lives entirely in the Supabase Edge Function.
 
 ---
 
 ## Quick Reference
 
 | Item | Value |
-|------|-------|
-| **Dev Server** | `npm run dev` → http://localhost:3000 |
+|---|---|
+| **Dev server** | `npm run dev` → http://localhost:3000 |
 | **Build** | `npm run build` |
-| **Tech Stack** | Next.js 15, TypeScript, Tailwind v4, Zustand, Vanta.js |
-| **Backend** | PocketBase at http://192.168.1.63:8055 |
-| **Admin Panel** | http://localhost:3000/admin (password: TroebelAdmin2024) |
-| **Payments** | Mollie (Bancontact, Payconiq) - Phase F |
+| **Lint** | `npm run lint` |
+| **Tech stack** | Next.js 15, TypeScript, Tailwind v4, Zustand, Vanta.js |
+| **Backend** | Supabase (hosted) — project ref `wkbhgadmkucxjwidzsig` |
+| **Admin panel** | `/admin` (Supabase Auth) |
+| **Payments** | None — order flow ends at email + sheet log |
 
 ---
 
@@ -86,6 +116,13 @@ ssh wouter@192.168.1.63 "docker ps | grep troebel"
 Hero (dark) → Beers (cream) → Story (dark) → Untappd (dark) → Professionals (cream) → Footer (dark)
 ```
 
+### Locked design decisions
+1. **B&W images with gold accent:** Story section uses grayscale images with gold bar on left
+2. **Header:** Transparent on hero pages, solid cream when scrolled
+3. **Hero background:** Vanta.js WebGL fog/clouds effect with brand colors (gold highlights)
+4. **Mobile menu:** Full-screen dark overlay
+5. **Beer cards:** White cards on cream bg, ABV badge top-right
+
 ---
 
 ## Project Structure
@@ -96,97 +133,50 @@ src/
 │   ├── globals.css          # Design tokens + base styles
 │   ├── layout.tsx           # Root layout with fonts
 │   ├── page.tsx             # Landing page
-│   ├── bieren/              # Beer catalog (TODO)
-│   │   ├── page.tsx
-│   │   └── [slug]/page.tsx
-│   ├── verhaal/page.tsx     # About page (TODO)
-│   ├── horeca/page.tsx      # B2B page (TODO)
-│   └── bestellen/page.tsx   # Cart/checkout (TODO)
+│   ├── bieren/              # Beer catalog
+│   ├── verhaal/             # About page
+│   ├── horeca/              # B2B page
+│   ├── webshop/             # Cart + checkout
+│   ├── admin/               # Admin UI (guarded by middleware)
+│   └── api/
+│       ├── orders/          # Order submission
+│       └── track/           # Page-view tracking
 │
 ├── components/
-│   ├── layout/
-│   │   ├── Header.tsx       # Transparent/scrolled states
-│   │   └── Footer.tsx       # 4-column footer
-│   ├── beer/
-│   │   └── BeerCard.tsx     # Beer card component
-│   ├── sections/
-│   │   ├── Hero.tsx         # Uses VantaBackground
-│   │   ├── FeaturedBeers.tsx
-│   │   ├── StorySection.tsx
-│   │   ├── ProfessionalsSection.tsx
-│   │   └── UntappdCta.tsx
-│   └── ui/
-│       └── VantaBackground.tsx  # WebGL fog/clouds effect
+│   ├── layout/              # Header, Footer
+│   ├── beer/                # BeerCard, QuickAddModal, etc.
+│   ├── sections/            # Hero, FeaturedBeers, Story, etc.
+│   ├── admin/               # Admin CRUD components
+│   └── ui/                  # VantaBackground, misc
 │
-├── lib/                     # Utilities (TODO)
-│   ├── pocketbase.ts
-│   └── cart.ts
+├── lib/
+│   ├── supabase/            # SSR + server clients
+│   ├── api/                 # Typed data access
+│   └── sheets.ts            # Google Sheets logger
 │
-└── hooks/                   # Custom hooks (TODO)
-    └── useCart.ts
+├── middleware.ts            # Admin route guard
+└── types/                   # Shared TS types
+
+supabase/
+├── functions/
+│   └── send-order-email/    # Edge function: order emails via Gmail SMTP
+└── migrations/              # SQL migrations
 ```
 
 ---
 
-## Key Design Decisions (Locked)
+## Phases
 
-1. **B&W Images with Gold Accent:** Story section uses grayscale images with gold bar on left
-2. **Header:** Transparent on hero pages, solid cream when scrolled
-3. **Hero Background:** Vanta.js WebGL fog/clouds effect with brand colors (gold highlights)
-4. **Mobile Menu:** Full-screen dark overlay
-5. **Beer Cards:** White cards on cream bg, ABV badge top-right
+### Completed
+- **Phase B** — Public site: `/bieren`, `/bieren/[slug]`, `/verhaal`, `/horeca`, `/webshop`; Zustand cart with persistence; age gate; neo-brutalist design system
+- **Phase C** — Backend migrated to Supabase; admin page ("Beheer Bieren"); variants (flesjes, bakken, vaten); featured beers; full CRUD
+- **Phase D** — Cart UX: QuickAddModal (desktop centered / mobile bottom sheet), toast notifications, "Ook verkrijgbaar" variant pills
+- **Phase E** — Order emails via Supabase Edge Function + Gmail SMTP
 
----
-
-## Development Commands
-
-```bash
-# Start dev server
-npm run dev
-
-# Build for production
-npm run build
-
-# Run linter
-npm run lint
-```
-
----
-
-## Phase B - COMPLETED
-- [x] `/bieren` - Beer catalog page
-- [x] `/bieren/[slug]` - Beer detail page
-- [x] `/verhaal` - About/story page
-- [x] `/horeca` - B2B page
-- [x] `/bestellen` - Cart + checkout
-- [x] Zustand cart state with persistence
-- [x] Age gate modal
-- [x] Neo-brutalist design system
-
-## Phase C - Backend - COMPLETED
-- [x] PocketBase backend at port 8055
-- [x] Custom admin page ("Beheer Bieren") for brewery owners
-- [x] Variants: bottles (flesjes), crates (bakken), kegs (vaten)
-- [x] Featured beers toggle (homepage line-up)
-- [x] Full CRUD for beers and variants
-
-## Phase D - Cart UX Redesign - COMPLETED
-- [x] QuickAddModal (desktop centered, mobile bottom sheet)
-- [x] Toast notifications with "Bekijk mand" action
-- [x] "Ook verkrijgbaar" variant pills in cart
-- [x] Mobile tested
-
-## Phase E - Production Rollout (NEXT)
-See `Plan/NEXT-SESSION-PROMPT.md` for details:
-- [ ] Final bug fixes
-- [ ] Switch from static export to SSR mode
-- [ ] Deploy to production (replace static site)
-- [ ] Admin access security
-
-## Phase F - Service Integration (FUTURE)
-- [ ] Mollie payment integration (Bancontact, Payconiq)
-- [ ] Order management (orders collection, status tracking)
-- [ ] Confirmation emails (SMTP/Resend/SendGrid)
+### Future (optional)
+- Payment integration (no Mollie — decided against online payments)
+- Order status workflow beyond `pending` / `processed`
+- "Send mail as" on Gmail for a branded `@troebelbrewing.be` sender
 
 ---
 
@@ -195,6 +185,5 @@ See `Plan/NEXT-SESSION-PROMPT.md` for details:
 | File | Purpose |
 |------|---------|
 | `Plan/Original.md` | Full project plan |
-| `Plan/BE-plan.md` | Phase C backend implementation plan |
+| `Plan/BE-plan.md` | Backend implementation plan |
 | `prototypes/*.html` | HTML wireframes |
-| `prototypes/assets/css/styles.css` | Original CSS design system |
