@@ -94,14 +94,14 @@ export default function QuickAddModal() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             {/* Image */}
-            <div className="bg-cream p-12 flex items-center justify-center">
+            <div className="bg-cream p-16 flex items-center justify-center">
               <div className="relative w-60 h-80">
                 <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="260px" />
               </div>
             </div>
 
             {/* Details */}
-            <div className="p-12">
+            <div className="p-16">
               <span className="font-body text-sm text-yellow uppercase tracking-wider">{beer.style}</span>
               <h2 className="text-3xl text-dark mb-2">{beer.name}</h2>
               <p className="font-body text-gray-600 italic mb-4">&quot;{beer.description}&quot;</p>
