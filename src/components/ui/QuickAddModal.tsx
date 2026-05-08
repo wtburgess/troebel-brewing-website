@@ -101,7 +101,7 @@ export default function QuickAddModal() {
             </div>
 
             {/* Details */}
-            <div className="p-10">
+            <div className="p-12 pr-14">
               <span className="font-body text-sm text-yellow uppercase tracking-wider">{beer.style}</span>
               <h2 className="text-3xl text-dark mb-2">{beer.name}</h2>
               <p className="font-body text-gray-600 italic mb-4">&quot;{beer.description}&quot;</p>
