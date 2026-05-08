@@ -200,18 +200,16 @@ export default function QuickAddModal() {
             <button onClick={handleClose} className="w-10 h-10 bg-gray-100 text-dark font-heading text-xl hover:bg-gray-200 transition-colors flex items-center justify-center rounded-full" aria-label="Sluiten">×</button>
           </div>
 
-          <div className="overflow-y-auto px-6 pb-4" style={{ maxHeight: 'calc(85vh - 200px)' }}>
-            <div className="flex gap-4 mb-4">
-              <div className="relative w-24 h-32 bg-cream flex-shrink-0">
-                <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="96px" />
-              </div>
-              <div className="flex-1">
-                <span className="font-body text-xs text-yellow uppercase tracking-wider">{beer.style}</span>
-                <h2 className="text-2xl text-dark leading-tight mb-1">{beer.name}</h2>
-                <div className="flex gap-4 text-sm">
-                  <span className="font-heading text-dark">{beer.abv}% ABV</span>
-                  {beer.ibu && <span className="font-heading text-dark">{beer.ibu} IBU</span>}
-                </div>
+          <div className="overflow-y-auto px-6 pb-4 text-center" style={{ maxHeight: 'calc(85vh - 200px)' }}>
+            <div className="relative w-32 h-40 bg-cream mx-auto mb-4">
+              <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="128px" />
+            </div>
+            <div className="mb-4">
+              <span className="font-body text-xs text-yellow uppercase tracking-wider">{beer.style}</span>
+              <h2 className="text-2xl text-dark leading-tight mb-1">{beer.name}</h2>
+              <div className="flex gap-4 text-sm justify-center">
+                <span className="font-heading text-dark">{beer.abv}% ABV</span>
+                {beer.ibu && <span className="font-heading text-dark">{beer.ibu} IBU</span>}
               </div>
             </div>
 
@@ -244,7 +242,7 @@ export default function QuickAddModal() {
             {beer.tastingNotes && beer.tastingNotes.length > 0 && (
               <div className="mb-4">
                 <span className="font-heading text-sm text-dark">Smaaknoten:</span>
-                <div className="flex flex-wrap gap-2 mt-1">
+                <div className="flex flex-wrap gap-2 mt-1 justify-center">
                   {beer.tastingNotes.map((note) => (
                     <span key={note} className="px-2 py-1 bg-cream text-dark text-xs font-body border border-dark">{note}</span>
                   ))}
