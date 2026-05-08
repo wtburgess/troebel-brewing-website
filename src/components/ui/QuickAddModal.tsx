@@ -22,6 +22,17 @@ export default function QuickAddModal() {
   const [selectedVariant, setSelectedVariant] = useState<BeerVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isClosing, setIsClosing] = useState(false);
+  const [hasOpened, setHasOpened] = useState(false);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      setHasOpened(false);
+      const id = requestAnimationFrame(() => setHasOpened(true));
+      return () => cancelAnimationFrame(id);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && beer) {
@@ -47,7 +58,28 @@ export default function QuickAddModal() {
     setTimeout(() => {
       closeModal();
       setIsClosing(false);
+      setDragOffset(0);
+      setTouchStartY(null);
     }, 250);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartY === null) return;
+    const offset = e.touches[0].clientY - touchStartY;
+    if (offset > 0) setDragOffset(offset);
+  };
+
+  const handleTouchEnd = () => {
+    if (dragOffset > 100) {
+      handleClose();
+    } else {
+      setDragOffset(0);
+    }
+    setTouchStartY(null);
   };
 
   const handleAdd = () => {
@@ -189,19 +221,30 @@ export default function QuickAddModal() {
       </div>
 
       {/* Mobile Bottom Sheet */}
-      <div className={`md:hidden fixed inset-x-0 bottom-0 z-50 ${isClosing ? "bottom-sheet-exit" : "bottom-sheet-enter"}`}>
+      <div
+        className="md:hidden fixed inset-x-0 bottom-0 z-50"
+        style={{
+          transform: `translateY(${isClosing || !hasOpened ? '100%' : `${dragOffset}px`})`,
+          transition: touchStartY === null ? 'transform .28s ease-out' : 'none',
+        }}
+      >
         <div
           className="bg-white max-h-[85vh] border-t-4 border-dark rounded-t-xl overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center justify-between px-4 py-3 flex-shrink-0">
+          <div
+            className="flex items-center justify-between px-4 py-3 flex-shrink-0 cursor-grab touch-none"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div className="w-10" />
             <div className="w-10 h-1 bg-gray-300 rounded-full" />
             <button onClick={handleClose} className="w-10 h-10 bg-gray-100 text-dark font-heading text-xl hover:bg-gray-200 transition-colors flex items-center justify-center rounded-full" aria-label="Sluiten">×</button>
           </div>
 
           <div className="overflow-y-auto px-6 pb-4 text-center" style={{ maxHeight: 'calc(85vh - 200px)' }}>
-            <div className="relative w-32 h-40 bg-cream mx-auto mb-4">
+            <div className="relative w-32 h-40 bg-cream mb-4 mx-auto block">
               <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="128px" />
             </div>
             <div className="mb-4">
@@ -228,7 +271,7 @@ export default function QuickAddModal() {
                     const variant = availableVariants.find((v) => v.id === e.target.value);
                     if (variant) setSelectedVariant(variant);
                   }}
-                  className="w-full px-3 py-3 border-2 border-dark font-body text-base focus:outline-none focus:border-yellow hover:border-yellow transition-colors"
+                  className="max-w-xs mx-auto block px-3 py-3 border-2 border-dark font-body text-base focus:outline-none focus:border-yellow hover:border-yellow transition-colors"
                 >
                   {availableVariants.map((variant) => (
                     <option key={variant.id} value={variant.id}>
@@ -252,7 +295,7 @@ export default function QuickAddModal() {
           </div>
 
           {/* Sticky footer */}
-          <div className="flex-shrink-0 px-6 py-4 bg-white border-t border-gray-200 safe-area-pb">
+          <div className="flex-shrink-0 px-6 pt-4 pb-8 bg-white border-t border-gray-200">
             {soldOut ? (
               <div className="sold-out-modal-banner" style={{ marginBottom: 0 }}>UITVERKOCHT — kom snel terug</div>
             ) : selectedVariant ? (
