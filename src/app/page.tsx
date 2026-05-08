@@ -49,8 +49,8 @@ export default async function Home() {
 
       <div className="marquee-wrap">
         <div className="marquee-inner">
-          <span className="marquee-text">RENBIER <span className="marquee-dot">///</span> FRAMBO <span className="marquee-dot">///</span> BREWS ALMIGHTY <span className="marquee-dot">///</span> TAPVERHUUR <span className="marquee-dot">///</span> HORECA <span className="marquee-dot">///</span> EVENTS <span className="marquee-dot">///</span> CUSTOM BIER <span className="marquee-dot">///</span> </span>
-          <span className="marquee-text">RENBIER <span className="marquee-dot">///</span> FRAMBO <span className="marquee-dot">///</span> BREWS ALMIGHTY <span className="marquee-dot">///</span> TAPVERHUUR <span className="marquee-dot">///</span> HORECA <span className="marquee-dot">///</span> EVENTS <span className="marquee-dot">///</span> CUSTOM BIER <span className="marquee-dot">///</span> </span>
+          <span className="marquee-text">FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> </span>
+          <span className="marquee-text">FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> </span>
         </div>
       </div>
 
@@ -64,7 +64,7 @@ export default async function Home() {
 
           <HomepageBeers beers={featured} />
 
-          <div className="beer-card custom">
+          <a href="#contact" className="beer-card custom" style={{ textDecoration: 'none' }}>
             <div className="beer-img">
               <span className="beer-abv">???</span>
               <img src="/Moeskop_mockup.jpeg" alt="Custom bier" />
@@ -73,9 +73,9 @@ export default async function Home() {
               <h3 className="beer-name">JOUW BIER</h3>
               <div className="beer-style">Custom</div>
               <p className="beer-desc">Jouw merk, jouw label, jouw recept. Van concept tot kroonkurk. Wij brouwen het, jij neemt de credits.</p>
-              <a href="#contact" className="beer-btn">Vertel ons je idee →</a>
+              <span className="beer-btn">Vertel ons je idee →</span>
             </div>
-          </div>
+          </a>
 
         </div>
       </section>
