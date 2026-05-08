@@ -101,7 +101,7 @@ export default function QuickAddModal() {
             </div>
 
             {/* Details */}
-            <div className="px-12 py-12 pr-16">
+            <div className="p-12">
               <span className="font-body text-sm text-yellow uppercase tracking-wider">{beer.style}</span>
               <h2 className="text-3xl text-dark mb-2">{beer.name}</h2>
               <p className="font-body text-gray-600 italic mb-4">&quot;{beer.description}&quot;</p>
@@ -159,7 +159,7 @@ export default function QuickAddModal() {
                       </div>
                       <button
                         onClick={handleAdd}
-                        className="flex-1 bg-yellow text-dark font-heading py-3 px-6 border-2 border-dark hover:bg-dark hover:text-yellow transition-all quickadd-cta"
+                        className="bg-yellow text-dark font-heading py-3 px-6 border-2 border-dark hover:bg-dark hover:text-yellow transition-all quickadd-cta"
                         style={{ transform: "skew(-4deg)", boxShadow: "3px 3px 0px var(--color-dark)" }}
                       >
                         IN WINKELMAND
@@ -273,7 +273,7 @@ export default function QuickAddModal() {
                   </div>
                   <button
                     onClick={handleAdd}
-                    className="flex-1 bg-yellow text-dark font-heading py-3 px-6 border-2 border-dark hover:bg-dark hover:text-yellow transition-all text-lg quickadd-cta"
+                    className="bg-yellow text-dark font-heading py-3 px-6 border-2 border-dark hover:bg-dark hover:text-yellow transition-all text-lg quickadd-cta"
                     style={{ transform: "skew(-4deg)", boxShadow: "3px 3px 0px var(--color-dark)" }}
                   >
                     IN WINKELMAND
