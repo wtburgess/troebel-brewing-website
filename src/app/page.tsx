@@ -49,8 +49,8 @@ export default async function Home() {
 
       <div className="marquee-wrap">
         <div className="marquee-inner">
-          <span className="marquee-text">FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> </span>
-          <span className="marquee-text">FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> </span>
+          <span className="marquee-text">FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> </span>
+          <span className="marquee-text">FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> FUCK HELDER <span className="marquee-dot">///</span> BIER VOOR WIE NIET ALLES WIL UITKLAREN <span className="marquee-dot">///</span> </span>
         </div>
       </div>
 
