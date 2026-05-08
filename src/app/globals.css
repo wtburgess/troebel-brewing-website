@@ -192,20 +192,26 @@ footer { background: var(--dark); border-top: 4px solid var(--troebel-gold); pad
 
 /* ─── RESPONSIVE ─── */
 @media(max-width: 1100px){ .beer-grid { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 1024px){
+  .sticker { display: none !important; }
+  .hd img { height: 48px !important; }
+}
 @media(max-width: 900px){
   .hero { grid-template-columns: 1fr; min-height: auto; }
   .hero-left { padding: 3.5rem 1.8rem; border-right: none; border-bottom: 3px solid var(--dark); }
   .hero-right { height: 50vw; min-height: 260px; }
-  .hero-tag { position: static; align-self: flex-start; margin-top: 1.5rem; right: auto; bottom: auto; font-size: 1.6rem; box-shadow: 3px 3px 0 var(--mid); }
+  .hero-tag { position: static; align-self: center; margin-top: 1.5rem; right: auto; bottom: auto; font-size: 1.6rem; box-shadow: 3px 3px 0 var(--mid); }
   .wie-inner { grid-template-columns: 1fr; }
   .wie-block:nth-child(1), .wie-block:nth-child(2), .wie-block:nth-child(3) { transform: none; }
   .wie-block:hover { transform: translate(-3px, -3px); }
+  .wie-team-img img { height: 280px; }
   .tap-inner { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; }
   .nav { display: none; }
   .hd { padding: .6rem 1.2rem; }
-  .sticker { width: 140px; height: 140px; bottom: 1rem; right: 1rem; }
+  .wie, .tap, .contact { padding: 4rem 1.5rem; }
+  .beers { padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 @media(max-width: 600px){ .beer-grid { grid-template-columns: 1fr; } }
 
