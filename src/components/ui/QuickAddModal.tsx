@@ -81,7 +81,7 @@ export default function QuickAddModal() {
         } transition-opacity duration-200`}
       >
         <div
-          className="bg-white max-w-[700px] w-full max-h-[90vh] overflow-y-auto border-4 border-dark relative pointer-events-auto"
+          className="bg-white max-w-[910px] w-full max-h-[90vh] overflow-y-auto border-4 border-dark relative pointer-events-auto"
           style={{ boxShadow: "8px 8px 0px var(--color-yellow)" }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -94,14 +94,14 @@ export default function QuickAddModal() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             {/* Image */}
-            <div className="bg-gray-100 p-8 flex items-center justify-center">
-              <div className="relative w-48 h-64">
-                <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="200px" />
+            <div className="bg-cream p-12 flex items-center justify-center">
+              <div className="relative w-60 h-80">
+                <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="260px" />
               </div>
             </div>
 
             {/* Details */}
-            <div className="p-6">
+            <div className="p-10">
               <span className="font-body text-sm text-yellow uppercase tracking-wider">{beer.style}</span>
               <h2 className="text-3xl text-dark mb-2">{beer.name}</h2>
               <p className="font-body text-gray-600 italic mb-4">&quot;{beer.description}&quot;</p>
@@ -202,7 +202,7 @@ export default function QuickAddModal() {
 
           <div className="overflow-y-auto px-4 pb-4" style={{ maxHeight: 'calc(85vh - 200px)' }}>
             <div className="flex gap-4 mb-4">
-              <div className="relative w-24 h-32 bg-gray-100 flex-shrink-0">
+              <div className="relative w-24 h-32 bg-cream flex-shrink-0">
                 <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="96px" />
               </div>
               <div className="flex-1">
