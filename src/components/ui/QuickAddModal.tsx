@@ -243,9 +243,11 @@ export default function QuickAddModal() {
             <button onClick={handleClose} className="w-10 h-10 bg-gray-100 text-dark font-heading text-xl hover:bg-gray-200 transition-colors flex items-center justify-center rounded-full" aria-label="Sluiten">×</button>
           </div>
 
-          <div className="overflow-y-auto px-6 pb-4 text-center" style={{ maxHeight: 'calc(85vh - 200px)' }}>
-            <div className="relative w-32 h-40 bg-cream mb-4 mx-auto block">
-              <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="128px" />
+          <div className="overflow-y-auto px-8 pb-4 text-center" style={{ maxHeight: 'calc(85vh - 200px)' }}>
+            <div className="flex justify-center mb-4">
+              <div className="relative w-36 h-44 bg-cream">
+                <Image src={beer.image} alt={beer.name} fill className="object-contain" sizes="144px" />
+              </div>
             </div>
             <div className="mb-4">
               <span className="font-body text-xs text-yellow uppercase tracking-wider">{beer.style}</span>
@@ -295,7 +297,7 @@ export default function QuickAddModal() {
           </div>
 
           {/* Sticky footer */}
-          <div className="flex-shrink-0 px-6 pt-4 pb-8 bg-white border-t border-gray-200">
+          <div className="flex-shrink-0 px-8 pt-5 pb-10 bg-white border-t border-gray-200">
             {soldOut ? (
               <div className="sold-out-modal-banner" style={{ marginBottom: 0 }}>UITVERKOCHT — kom snel terug</div>
             ) : selectedVariant ? (
