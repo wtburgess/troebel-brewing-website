@@ -94,9 +94,6 @@ export default async function Home() {
               <a href="#contact" className="btn">Samenwerken →</a>
               <a href="#bieren" className="btn-outline">Onze bieren</a>
             </div>
-            <div className="wie-team-img">
-              <img src="/troebel-team.jpg" alt="Het Troebel Team" />
-            </div>
           </div>
           <div className="wie-visual">
             <div className="wie-block">
@@ -113,6 +110,9 @@ export default async function Home() {
               <span className="wie-num">03</span>
               <h4>Geen filter, geen bullshit</h4>
               <p>Wat in het bier zit, zit ook in onze communicatie. Eerlijk, direct, een beetje koppig.</p>
+            </div>
+            <div className="wie-team-img">
+              <img src="/troebel-team.jpg" alt="Het Troebel Team" />
             </div>
           </div>
         </div>
@@ -175,7 +175,17 @@ export default async function Home() {
         </div>
       </section>
 
-      <a href="#bieren" className="sticker" style={{ textDecoration: 'none' }}>FUCK<br />HELDER</a>
+      <a href="#bieren" className="sticker" style={{ textDecoration: 'none' }}>
+        <svg viewBox="0 0 190 190" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+          <defs>
+            <path id="sticker-ring" d="M 95,95 m -78,0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" />
+          </defs>
+          <text fontSize="13" fill="#1C1C1C" fontFamily="Anton, sans-serif" textAnchor="start">
+            <textPath href="#sticker-ring" textLength="475" lengthAdjust="spacing" startOffset="7">NIEUW BIER • NIEUW BIER • NIEUW BIER •</textPath>
+          </text>
+        </svg>
+        <img src="/Frambo_mockup.png" alt="Frambo" style={{ width: '115px', height: '135px', objectFit: 'contain', position: 'relative', zIndex: 1 }} />
+      </a>
       <Footer />
     </>
   );
