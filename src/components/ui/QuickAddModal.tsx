@@ -265,7 +265,7 @@ export default function QuickAddModal() {
                     <span className="font-body text-sm text-gray-500 ml-2">/ {selectedVariant.label}</span>
                   )}
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 justify-center">
                   <div className="flex items-center border-2 border-dark">
                     <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 font-heading text-xl hover:bg-dark hover:text-yellow transition-colors">−</button>
                     <span className="w-10 text-center font-heading text-lg">{quantity}</span>
