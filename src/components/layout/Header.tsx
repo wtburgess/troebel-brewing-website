@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import CartLink from './CartLink';
 
-const HERO_PAGES = ['/', '/verhaal', '/horeca'];
+const HERO_PAGES = ['/', '/horeca'];
 
 export default function Header() {
   const pathname = usePathname();

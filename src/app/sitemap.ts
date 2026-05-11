@@ -20,13 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       lastModified: new Date("2025-01-01"),
     },
-    {
-      url: "https://troebelbrewing.be/verhaal/",
-      priority: 0.7,
-      changeFrequency: "monthly",
-      lastModified: new Date("2025-01-01"),
-    },
-    {
+{
       url: "https://troebelbrewing.be/voorwaarden/",
       priority: 0.3,
       changeFrequency: "yearly",
