@@ -87,10 +87,9 @@ export default async function Home() {
           <div className="wie-txt">
             <span className="section-label">wie wij zijn</span>
             <div className="section-title">TROEBEL<br />VAN<br />KARAKTER</div>
-            <p>Troebel Brewing is een kleine brouwerij uit Antwerpen die in 2022 begon met één simpele overtuiging: <strong>ongefilterd is eerlijker.</strong></p>
-            <p>We brouwen bieren die ergens naar smaken. Geen glad verhaal, geen neppe rustieke foto's. Gewoon bier, met tanden.</p>
-            <p>Onze bieren zijn troebel omdat we niks eruit filteren. Geen smaak, geen karakter, geen gistdeeltjes die eigenlijk gewoon lekker zijn.</p>
-            <p>We leveren aan particulieren, horeca en events — en we helpen je ook je eigen bier te brouwen. <strong>Want iedereen verdient een eigen bier.</strong></p>
+            <p>Wat in 2022 begon als een experiment van een groep vrienden op een dakterras in Borgerhout, is inmiddels geland op de Dagenraadplaats. In ons lab boven Café De Moeskop focussen we op wat we het leukst vinden: experimenteren op kleine schaal.</p>
+            <p>Bij ons geen massaproductie, maar creativiteit in kleine volumes. En voor wie het zich afvraagt: nee, onze bieren zijn niet altijd troebel... als je er iets te veel van drinkt, zouden je gedachten dat wel eens kunnen worden.</p>
+            <p>We leveren aan particulieren, horeca en events — en we helpen je ook je eigen bier te brouwen.</p>
             <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <a href="#contact" className="btn">Samenwerken →</a>
               <a href="#bieren" className="btn-outline">Onze bieren</a>
