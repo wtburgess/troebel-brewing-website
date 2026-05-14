@@ -98,13 +98,13 @@ export default async function Home() {
           <div className="wie-visual">
             <div className="wie-block">
               <span className="wie-num">01</span>
-              <h4>The lab</h4>
-              <p>Experimenteren op kleine schaal.</p>
+              <h4>Van Antwerpen, voor iedereen</h4>
+              <p>Ontwikkeld in Antwerpen, gedronken overal.</p>
             </div>
             <div className="wie-block">
               <span className="wie-num">02</span>
-              <h4>Van Antwerpen, voor iedereen</h4>
-              <p>Ontwikkeld in Antwerpen, gedronken overal.</p>
+              <h4>The lab</h4>
+              <p>In ons lab experimenteren op kleine schaal.</p>
             </div>
             <div className="wie-block">
               <span className="wie-num">03</span>
