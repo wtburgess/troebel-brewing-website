@@ -98,18 +98,18 @@ export default async function Home() {
           <div className="wie-visual">
             <div className="wie-block">
               <span className="wie-num">01</span>
-              <h4>Klein maar bijzonder</h4>
-              <p>We brouwen in kleine batches. Geen schaalvoordelen, wel smaakvoordelen.</p>
+              <h4>The lab</h4>
+              <p>Experimenteren op kleine schaal.</p>
             </div>
             <div className="wie-block">
               <span className="wie-num">02</span>
               <h4>Van Antwerpen, voor iedereen</h4>
-              <p>Gebrouwen in de stad. Gedronken overal. Het liefst op een terras in de zon.</p>
+              <p>Ontwikkeld in Antwerpen, gedronken overal.</p>
             </div>
             <div className="wie-block">
               <span className="wie-num">03</span>
-              <h4>Geen filter, geen bullshit</h4>
-              <p>Wat in het bier zit, zit ook in onze communicatie. Eerlijk, direct, een beetje koppig.</p>
+              <h4>Craft till I die</h4>
+              <p>Kleine batches vol smaak.</p>
             </div>
             <div className="wie-team-img">
               <img src="/troebel-team.jpg" alt="Het Troebel Team" />
