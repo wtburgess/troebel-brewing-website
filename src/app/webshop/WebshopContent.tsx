@@ -213,7 +213,7 @@ export default function WebshopContent() {
                       </button>
                     </div>
 
-                    <p className="pickup-note">afhalen bij de brouwerij — op afspraak</p>
+                    <p className="pickup-note">afhalen op afspraak</p>
 
                     {items.map((item) => (
                       <div key={getItemKey(item)} className="checkout-row">
@@ -413,7 +413,7 @@ export default function WebshopContent() {
 
                   <div className="help-box">
                     <h4>Hulp nodig?</h4>
-                    <a href="mailto:hallo@troebelbrewing.be">hallo@troebelbrewing.be</a>
+                    <a href="mailto:Troebel.brew@gmail.com">Troebel.brew@gmail.com</a>
                   </div>
                 </aside>
               </div>
