@@ -126,10 +126,8 @@ export default async function Home() {
             <h2>JOUW EVENT,<br />ONZE <span>TAP</span></h2>
             <p>Wij leveren de tap, het bier en de kennis. Jij geniet van het feestje. Simpeler dan het klinkt, mooier dan je verwacht.</p>
             <ul className="tap-features">
-              <li>Volledige installatie inclusief</li>
+              <li>Volledige installatie</li>
               <li>Keuze uit onze bieren op tap</li>
-              <li>Op maat voor kleine en grote events</li>
-              <li>Horeca & privé mogelijk</li>
               <li>Antwerpen en omstreken</li>
             </ul>
             <a href="#contact" className="btn" style={{ fontSize: '1rem', padding: '.65rem 2rem' }}>Vraag een offerte →</a>
