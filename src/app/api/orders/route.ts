@@ -59,26 +59,28 @@ export async function POST(request: NextRequest) {
     const orderNumber = await generateOrderNumber(supabase);
 
     // ── Calculate totals ──────────────────────────────────────────
+    // Variant prices are displayed and stored INCLUSIVE of VAT.
+    // Derive excl-VAT and VAT amount from the inclusive figure.
     const orderItems = items.map((item) => {
-      const unitPrice = item.variant.price;
-      const itemTotalExcl = unitPrice * item.quantity;
-      const itemVat = Math.round(itemTotalExcl * VAT_RATE * 100) / 100;
-      const itemTotalIncl = Math.round(itemTotalExcl * (1 + VAT_RATE) * 100) / 100;
+      const unitPriceIncl = item.variant.price;
+      const itemTotalIncl = Math.round(unitPriceIncl * item.quantity * 100) / 100;
+      const itemTotalExcl = Math.round((itemTotalIncl / (1 + VAT_RATE)) * 100) / 100;
+      const itemVat = Math.round((itemTotalIncl - itemTotalExcl) * 100) / 100;
 
       return {
         beer_name: item.beer.name,
         variant_label: item.variant.label,
         quantity: item.quantity,
-        unit_price: unitPrice,
+        unit_price: unitPriceIncl,
         total_excl_vat: itemTotalExcl,
         vat_amount: itemVat,
         total_incl_vat: itemTotalIncl,
       };
     });
 
-    const totalExclVat = orderItems.reduce((s, i) => s + i.total_excl_vat, 0);
-    const vatAmount = Math.round(totalExclVat * VAT_RATE * 100) / 100;
-    const totalInclVat = Math.round(totalExclVat * (1 + VAT_RATE) * 100) / 100;
+    const totalInclVat = Math.round(orderItems.reduce((s, i) => s + i.total_incl_vat, 0) * 100) / 100;
+    const totalExclVat = Math.round((totalInclVat / (1 + VAT_RATE)) * 100) / 100;
+    const vatAmount = Math.round((totalInclVat - totalExclVat) * 100) / 100;
 
     // ── Insert order ──────────────────────────────────────────────
     const { data: order, error: orderError } = await supabase

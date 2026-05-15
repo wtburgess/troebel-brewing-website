@@ -42,6 +42,16 @@ function formatCurrency(amount: number) {
   return `€ ${amount.toFixed(2).replace('.', ',')}`;
 }
 
+// denomailer@1.6.0's `html` field encodes as quoted-printable, which leaves
+// literal "=20" sequences in clients that don't decode QP properly. Encoding
+// to base64 ourselves and passing via `mimeContent` sidesteps the issue.
+function htmlAsBase64Mime(html: string) {
+  const utf8 = new TextEncoder().encode(html);
+  let bin = "";
+  utf8.forEach((b) => (bin += String.fromCharCode(b)));
+  return btoa(bin).replace(/(.{76})/g, "$1\r\n");
+}
+
 function buildItemsTable(items: OrderEmailData['items']): string {
   const rows = items
     .map(
@@ -74,7 +84,7 @@ function buildItemsTable(items: OrderEmailData['items']): string {
 function buildConfirmationHtml(order: OrderEmailData): string {
   const fulfillmentText =
     order.fulfillment === 'pickup'
-      ? 'Afhalen bij de brouwerij (na afspraak)'
+      ? 'Afhalen bij afhaalpunt (op afspraak)'
       : 'Verzending';
 
   return `
@@ -91,6 +101,7 @@ function buildConfirmationHtml(order: OrderEmailData): string {
     <div style="padding:32px 40px;">
       <p style="font-size:16px;color:#1C1C1C;">Dag ${order.customerName},</p>
       <p style="color:#555;">Bedankt voor je bestelling! We hebben alles goed ontvangen.</p>
+      <p style="color:#555;">Hieronder een overzicht van je bestelling. We nemen binnenkort contact op om het bier af te halen, zodat je snel kan proeven!</p>
 
       <div style="background:#f9f9f9;border:1px solid #eee;padding:16px 20px;margin:20px 0;">
         <strong style="font-size:14px;color:#1C1C1C;">Bestelnummer:</strong>
@@ -120,8 +131,12 @@ function buildConfirmationHtml(order: OrderEmailData): string {
       </div>
 
       <p style="margin-top:24px;color:#555;font-size:14px;">
-        We nemen binnenkort contact met je op om de afhaaltijd te bevestigen.<br>
+        We laten je weten op welke ophaalpunten in Antwerpen je je bestelling kan komen halen.<br>
         Vragen? Mail ons op <a href="mailto:Troebel.brew@gmail.com" style="color:#D4A017;">Troebel.brew@gmail.com</a>
+      </p>
+
+      <p style="margin-top:24px;color:#555;font-size:14px;text-align:center;">
+        Volg ons op Instagram: <a href="https://www.instagram.com/troebelbrewing" style="color:#D4A017;font-weight:700;">@troebelbrewing</a>
       </p>
     </div>
 
@@ -152,6 +167,14 @@ function buildBreweryAlertHtml(order: OrderEmailData): string {
 
 Deno.serve(async (req: Request) => {
   try {
+    const expectedSecret = Deno.env.get("WEBHOOK_SECRET");
+    if (!expectedSecret || req.headers.get("x-webhook-secret") !== expectedSecret) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const payload = await req.json() as {
       type: string;
       table: string;
@@ -221,15 +244,27 @@ Deno.serve(async (req: Request) => {
       await client.send({
         from,
         to: orderData.customerEmail,
-        subject: `Bestelbevestiging ${orderData.orderNumber} — Troebel Brewing`,
-        html: buildConfirmationHtml(orderData),
+        subject: `Binnenkort lekker bier bij je thuis — Troebel Brewing`,
+        mimeContent: [
+          {
+            mimeType: 'text/html; charset="utf-8"',
+            content: htmlAsBase64Mime(buildConfirmationHtml(orderData)),
+            transferEncoding: "base64",
+          },
+        ],
       });
 
       await client.send({
         from,
         to: breweryEmail,
         subject: `Nieuwe bestelling ${orderData.orderNumber} — ${orderData.customerName}`,
-        html: buildBreweryAlertHtml(orderData),
+        mimeContent: [
+          {
+            mimeType: 'text/html; charset="utf-8"',
+            content: htmlAsBase64Mime(buildBreweryAlertHtml(orderData)),
+            transferEncoding: "base64",
+          },
+        ],
       });
     } finally {
       await client.close();

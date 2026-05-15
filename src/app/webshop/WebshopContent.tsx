@@ -361,6 +361,9 @@ export default function WebshopContent() {
                         Bevestiging
                       </div>
                     </div>
+                    <p className="pickup-info-note">
+                      Na bevestiging sturen we je een mailtje met de verschillende ophaalpunten in Antwerpen.
+                    </p>
                     <label className="checkbox-row">
                       <input
                         type="checkbox"
@@ -409,6 +412,9 @@ export default function WebshopContent() {
                       {isSubmitting ? "Bezig..." : "BESTELLEN →"}
                     </button>
                     <p className="order-submit-note">Je ontvangt een bevestiging per e-mail.</p>
+                    <p className="order-submit-note">
+                      Na bevestiging sturen we je een mailtje met de verschillende ophaalpunten in Antwerpen.
+                    </p>
                   </div>
 
                   <div className="help-box">

@@ -253,6 +253,7 @@ footer { background: var(--dark); border-top: 4px solid var(--troebel-gold); pad
 .checkout-section-num { width: 2.5rem; height: 2.5rem; background: var(--dark); color: var(--troebel-gold); font-family: var(--font-d); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transform: rotate(-2deg); flex-shrink: 0; }
 .checkout-section-link { font-family: var(--font-d); text-transform: uppercase; font-size: .75rem; letter-spacing: .05em; color: var(--dark); background: none; border: none; cursor: pointer; border-bottom: 2px solid var(--troebel-gold); padding: 0 .1rem .15rem; }
 .checkout-section-link:hover { color: var(--troebel-gold); }
+.pickup-info-note { font-size: .9rem; color: rgba(0,0,0,.7); margin-bottom: 1rem; padding: .75rem 1rem; background: rgba(212,160,23,.08); border-left: 3px solid var(--troebel-gold); }
 
 .checkout-row { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px dashed rgba(13,13,11,.25); }
 .checkout-row:last-of-type { border-bottom: none; }

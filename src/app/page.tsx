@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import HomepageBeers from '@/components/sections/HomepageBeers';
 import HeroImage from '@/components/sections/HeroImage';
+import ContactSection from '@/components/sections/ContactSection';
 import { getFeaturedBeers } from '@/lib/api/beers';
 
 export const revalidate = 60;
@@ -99,12 +100,12 @@ export default async function Home() {
             <div className="wie-block">
               <span className="wie-num">01</span>
               <h4>Van Antwerpen, voor iedereen</h4>
-              <p>Ontwikkeld in Antwerpen, gedronken overal.</p>
+              <p>Ontwikkeld in Antwerpen, overal gedronken.</p>
             </div>
             <div className="wie-block">
               <span className="wie-num">02</span>
               <h4>The lab</h4>
-              <p>In ons lab experimenteren op kleine schaal.</p>
+              <p>In ons lab experimenteren we op kleine schaal.</p>
             </div>
             <div className="wie-block">
               <span className="wie-num">03</span>
@@ -144,32 +145,7 @@ export default async function Home() {
         <div className="contact-inner">
           <span className="section-label">neem contact op</span>
           <div className="section-title">LATEN WE<br />IETS MAKEN</div>
-          <div className="contact-grid">
-            <div className="contact-types">
-              <a href="#contact-form" className="ct-item" style={{ textDecoration: 'none', color: 'inherit' }}><span className="ct-icon">→</span><div><div className="ct-label">Particulier bestellen</div><div className="ct-sub">Koop rechtstreeks bij ons. Afhalen of levering in Antwerpen.</div></div></a>
-              <a href="#contact-form" className="ct-item" style={{ textDecoration: 'none', color: 'inherit' }}><span className="ct-icon">→</span><div><div className="ct-label">Horeca aanvraag</div><div className="ct-sub">Troebel op jouw kaart? Stuur ons je zaakgegevens.</div></div></a>
-              <a href="#contact-form" className="ct-item" style={{ textDecoration: 'none', color: 'inherit' }}><span className="ct-icon">→</span><div><div className="ct-label">Tapverhuur voor events</div><div className="ct-sub">Datum, locatie, verwachte bezoekers — wij maken een offerte op maat.</div></div></a>
-              <a href="#contact-form" className="ct-item" style={{ textDecoration: 'none', color: 'inherit' }}><span className="ct-icon">→</span><div><div className="ct-label">Custom / eigen bier</div><div className="ct-sub">Vertel ons je idee, hoe wild ook. We kijken wat we samen maken.</div></div></a>
-              <div style={{ padding: '1.5rem 0', fontSize: '.88rem', color: 'var(--mid)', lineHeight: 1.8 }}>
-                <strong style={{ fontSize: '1rem', color: 'var(--dark)' }}>Troebel Brewing</strong><br />
-                Congresstraat 22/01, 2060 Antwerpen<br />
-                <a href="mailto:Troebel.brew@gmail.com" style={{ color: 'var(--troebel-gold)', textDecoration: 'none', fontWeight: 700 }}>Troebel.brew@gmail.com</a>
-              </div>
-            </div>
-            <div className="contact-form" id="contact-form">
-              <h3>Schrijf ons</h3>
-              <div className="form-row"><label>Naam</label><input type="text" placeholder="Jouw naam" /></div>
-              <div className="form-row"><label>E-mail</label><input type="email" placeholder="jij@voorbeeld.be" /></div>
-              <div className="form-row">
-                <label>Ik ben geïnteresseerd in</label>
-                <select>
-                  <option>Particulier bestellen</option><option>Horeca aanvraag</option><option>Tapverhuur voor een event</option><option>Custom / eigen bier</option><option>Iets anders</option>
-                </select>
-              </div>
-              <div className="form-row"><label>Bericht</label><textarea placeholder="Vertel ons iets. Of alles."></textarea></div>
-              <button className="submit-btn">Verstuur →</button>
-            </div>
-          </div>
+          <ContactSection />
         </div>
       </section>
 
