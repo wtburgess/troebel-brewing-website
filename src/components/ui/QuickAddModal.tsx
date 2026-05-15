@@ -140,13 +140,13 @@ export default function QuickAddModal() {
 
               <div className="flex gap-6 mb-4 pb-4 border-b border-gray-200">
                 <div className="text-center">
-                  <span className="font-heading text-xl text-dark block">{beer.abv}%</span>
-                  <span className="font-body text-xs text-gray-500 uppercase">ABV</span>
+                  <span className="font-body text-xs text-gray-500 uppercase block">ABV</span>
+                  <span className="font-heading text-xl text-dark">{beer.abv}%</span>
                 </div>
                 {beer.ibu && (
                   <div className="text-center">
-                    <span className="font-heading text-xl text-dark block">{beer.ibu}</span>
-                    <span className="font-body text-xs text-gray-500 uppercase">IBU</span>
+                    <span className="font-body text-xs text-gray-500 uppercase block">IBU</span>
+                    <span className="font-heading text-xl text-dark">{beer.ibu}</span>
                   </div>
                 )}
               </div>
@@ -164,7 +164,7 @@ export default function QuickAddModal() {
                           const variant = availableVariants.find((v) => v.id === e.target.value);
                           if (variant) setSelectedVariant(variant);
                         }}
-                        className="w-full px-3 py-2 border-2 border-dark font-body focus:outline-none focus:border-yellow hover:border-yellow transition-colors"
+                        className="w-full max-w-[16rem] px-3 py-2 border-2 border-dark font-body focus:outline-none focus:border-yellow hover:border-yellow transition-colors"
                       >
                         {availableVariants.map((variant) => (
                           <option key={variant.id} value={variant.id}>
