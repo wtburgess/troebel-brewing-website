@@ -43,7 +43,7 @@ export default async function Home() {
           <div className="hero-tag">geen filter</div>
         </div>
         <div className="hero-right">
-          <div className="hero-label">Vers gebrouwen // Antwerpen</div>
+          <div className="hero-label">Brouwsels // Antwerpen</div>
           <HeroImage />
           <div className="hero-stamp">100%<br />ongefilterd</div>
         </div>
