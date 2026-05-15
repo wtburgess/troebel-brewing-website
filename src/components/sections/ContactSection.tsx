@@ -39,13 +39,49 @@ const interestOptions = [
   "Iets anders",
 ];
 
+type Status = "idle" | "sending" | "success" | "error";
+
 export default function ContactSection() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [interest, setInterest] = useState(interestOptions[0]);
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleTileClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
     e.preventDefault();
     setInterest(value);
     document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("sending");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, interest, message }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setStatus("error");
+        setErrorMsg(data?.error ?? "Versturen mislukt. Probeer het later opnieuw.");
+        return;
+      }
+
+      setStatus("success");
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch {
+      setStatus("error");
+      setErrorMsg("Geen verbinding. Probeer het later opnieuw.");
+    }
   };
 
   return (
@@ -79,15 +115,26 @@ export default function ContactSection() {
           </a>
         </div>
       </div>
-      <div className="contact-form" id="contact-form">
+      <form className="contact-form" id="contact-form" onSubmit={handleSubmit}>
         <h3>Stuur ons een berichtje</h3>
         <div className="form-row">
           <label>Naam</label>
-          <input type="text" placeholder="Jouw naam" />
+          <input
+            type="text"
+            placeholder="Jouw naam"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
         <div className="form-row">
           <label>E-mail</label>
-          <input type="email" placeholder="jij@voorbeeld.be" />
+          <input
+            type="email"
+            placeholder="jij@voorbeeld.be"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div className="form-row">
           <label>Ik ben geïnteresseerd in</label>
@@ -101,10 +148,25 @@ export default function ContactSection() {
         </div>
         <div className="form-row">
           <label>Bericht</label>
-          <textarea placeholder="Vertel ons iets. Of alles."></textarea>
+          <textarea
+            placeholder="Vertel ons iets. Of alles."
+            required
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
         </div>
-        <button className="submit-btn">Verstuur →</button>
-      </div>
+        <button className="submit-btn" type="submit" disabled={status === "sending"}>
+          {status === "sending" ? "Versturen..." : "Verstuur →"}
+        </button>
+        {status === "success" && (
+          <p style={{ marginTop: "1rem", color: "var(--troebel-gold)", fontWeight: 700 }}>
+            Bedankt! Je bericht is verstuurd. We nemen snel contact op.
+          </p>
+        )}
+        {status === "error" && (
+          <p style={{ marginTop: "1rem", color: "#c0392b", fontWeight: 600 }}>{errorMsg}</p>
+        )}
+      </form>
     </div>
   );
 }
