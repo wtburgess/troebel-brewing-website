@@ -27,12 +27,14 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://troebelbrewing.be'),
   title: "Troebel Brewing Co. | Hopmerkelijke Brouwsels uit Antwerpen",
   description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter. Gebrouwen door vrienden, voor vrienden.",
+  keywords: ["craft bier antwerpen", "nano brouwerij", "belgisch craft bier", "bier kopen antwerpen", "artisanaal bier", "craft brewery antwerp", "troebel brewing", "bier bestellen antwerpen", "tapverhuur antwerpen"],
   authors: [{ name: "Troebel Brewing Co." }],
   openGraph: {
     title: "Troebel Brewing Co. | Hopmerkelijke Brouwsels uit Antwerpen",
     description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter.",
     type: "website",
     locale: "nl_BE",
+    siteName: "Troebel Brewing Co.",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Troebel Brewing Co." }],
   },
   twitter: {
@@ -50,10 +52,9 @@ const organizationJsonLd = {
   "name": "Troebel Brewing Co.",
   "url": "https://troebelbrewing.be",
   "logo": "https://troebelbrewing.be/logo.jpg",
-  "email": "Troebel.brew@gmail.com",
-  "telephone": "+32-123-45-67-89",
+  "email": "troebel.brew@gmail.com",
   "priceRange": "€€",
-  "servesCuisine": "Craft Beer",
+  "foundingDate": "2022",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Congresstraat 22/01",
@@ -66,11 +67,15 @@ const organizationJsonLd = {
     "latitude": 51.2333,
     "longitude": 4.4025,
   },
+  "areaServed": {
+    "@type": "City",
+    "name": "Antwerpen",
+  },
   "sameAs": [
     "https://www.instagram.com/troebelbrewing",
     "https://untappd.com/TroebelBrewing",
   ],
-  "description": "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter.",
+  "description": "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter. Gebrouwen door vrienden, voor vrienden.",
 };
 
 export default function RootLayout({

@@ -3,18 +3,23 @@ import HorecaContent from "./HorecaContent";
 import { faq } from "./faqData";
 
 export const metadata: Metadata = {
-  title: "Horeca samenwerking | Troebel Brewing Co.",
+  title: "Craft Bier voor Horeca Antwerpen | Troebel Brewing Co.",
   description:
-    "Craft bier voor jouw restaurant, café of bar. Persoonlijke levering in regio Antwerpen, flexibele bestellingen en exclusieve batches.",
+    "Craft bier leverancier voor restaurants, cafés en bars in regio Antwerpen. Persoonlijke levering, flexibele bestellingen en exclusieve kleine batches op maat.",
+  keywords: ["craft bier horeca", "bier leverancier antwerpen", "craft beer restaurant antwerpen", "artisanaal bier café", "craft bier op tap antwerpen"],
+  alternates: {
+    canonical: "https://troebelbrewing.be/horeca/",
+  },
   openGraph: {
-    title: "Horeca samenwerking | Troebel Brewing Co.",
+    title: "Craft Bier voor Horeca Antwerpen | Troebel Brewing Co.",
     description:
       "Craft bier voor jouw restaurant, café of bar. Persoonlijke levering in regio Antwerpen, flexibele bestellingen en exclusieve batches.",
+    url: "https://troebelbrewing.be/horeca/",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Troebel Brewing Co. Horeca" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Horeca samenwerking | Troebel Brewing Co.",
+    title: "Craft Bier voor Horeca Antwerpen | Troebel Brewing Co.",
     description:
       "Craft bier voor jouw restaurant, café of bar. Persoonlijke levering in regio Antwerpen, flexibele bestellingen en exclusieve batches.",
   },

@@ -10,10 +10,15 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Troebel Brewing Co. | Hopmerkelijke Brouwsels uit Antwerpen",
-  description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter. Gebrouwen door vrienden, voor vrienden.",
+  description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter — gebrouwen op de Dageraadplaats in Borgerhout. Bestel online of haal af bij de brouwerij.",
+  keywords: ["craft bier antwerpen", "nano brouwerij", "belgisch craft bier", "bier kopen antwerpen", "artisanaal bier", "craft brewery antwerp", "troebel brewing", "tapverhuur antwerpen"],
+  alternates: {
+    canonical: "https://troebelbrewing.be/",
+  },
   openGraph: {
     title: "Troebel Brewing Co. | Hopmerkelijke Brouwsels uit Antwerpen",
     description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter.",
+    url: "https://troebelbrewing.be/",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Troebel Brewing Co." }],
   },
   twitter: {

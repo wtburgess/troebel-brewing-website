@@ -18,9 +18,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://troebelbrewing.be/horeca/",
       priority: 0.8,
       changeFrequency: "monthly",
-      lastModified: new Date("2025-01-01"),
+      lastModified: new Date("2026-01-01"),
     },
-{
+    {
       url: "https://troebelbrewing.be/voorwaarden/",
       priority: 0.3,
       changeFrequency: "yearly",
