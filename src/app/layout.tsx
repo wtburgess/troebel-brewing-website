@@ -44,6 +44,9 @@ export const metadata: Metadata = {
     description: "Nano-brouwerij uit Antwerpen. Belgische craft bieren met karakter.",
     images: ["/opengraph-image"],
   },
+  verification: {
+    google: "zfUPVTN5_QGrx2cRKWot2bA-tBISE5yEMu_4TXRo16w",
+  },
 };
 
 const organizationJsonLd = {
