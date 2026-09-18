@@ -619,3 +619,52 @@ footer { background: var(--dark); border-top: 4px solid var(--troebel-gold); pad
 .sold-out-banner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; }
 .sold-out-banner::before { content: "UITVERKOCHT"; font-family: var(--font-d); font-size: clamp(1.1rem, 4vw, 1.6rem); letter-spacing: .08em; color: #fff; background: #b91c1c; padding: .45rem 2.5rem; transform: rotate(-15deg); box-shadow: 0 4px 16px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.2); white-space: nowrap; text-shadow: 2px 2px 0 #7f1d1d; }
 .sold-out-modal-banner { background: #7f1d1d; border: 3px solid #1c0a0a; color: #fff; padding: .85rem 1.5rem; font-family: var(--font-d); font-size: 1.15rem; text-transform: uppercase; letter-spacing: .06em; text-align: center; text-shadow: 1px 1px 0 #1c0a0a; margin-bottom: 1rem; }
+
+/* ─── AGE GATE (18+) ─── */
+/* The gate ships in the server HTML. The inline script in layout.tsx sets
+   data-age-ok on <html> before first paint when the session already passed,
+   so a returning visitor never sees it and an unverified visitor never sees
+   the site. After hydration AgeGate.tsx owns the attribute.
+   No !important on the body rule: it must never beat QuickAddModal's inline
+   style.overflow writes. */
+html[data-age-ok] .agegate { display: none; }
+html:not([data-age-ok]) body { overflow: hidden; }
+
+.agegate { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1.5rem 1.25rem; background: rgba(13,13,11,.96); background-image: radial-gradient(circle at 50% 0%, rgba(212,150,26,.18), transparent 62%); overflow-y: auto; overscroll-behavior: contain; animation: agegateFade .22s ease-out both; }
+.agegate-card { width: 100%; max-width: 520px; background: var(--warm-white); border: 3px solid var(--dark); box-shadow: 10px 10px 0 var(--troebel-gold); padding: 2.75rem 2.25rem 2rem; text-align: center; animation: agegateIn .3s cubic-bezier(.2,.8,.3,1) both; }
+
+.agegate-logo { font-family: var(--font-d); font-size: 1.7rem; line-height: .95; letter-spacing: .02em; text-transform: uppercase; margin-bottom: 1rem; }
+.agegate-logo span { color: var(--troebel-gold); }
+.agegate-eyebrow { font-family: var(--font-h); color: var(--troebel-gold); font-size: 1rem; display: inline-block; transform: rotate(-1.5deg); margin-bottom: .25rem; }
+.agegate-title { font-family: var(--font-d); font-size: clamp(2rem, 7vw, 3rem); line-height: .9; text-transform: uppercase; color: var(--dark); margin-bottom: .9rem; }
+.agegate-title:focus { outline: none; }
+.agegate-title:focus-visible { outline: 3px solid var(--troebel-gold); outline-offset: 4px; }
+.agegate-q { font-size: 1.05rem; line-height: 1.55; color: var(--mid); max-width: 34ch; margin: 0 auto 1.9rem; }
+
+.agegate-actions { display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+.agegate-btn { padding: .85rem 1.9rem; font-size: 1rem; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; }
+.agegate .btn:focus-visible, .agegate .btn-outline:focus-visible { outline: 3px solid var(--troebel-gold); outline-offset: 4px; }
+
+.agegate-divider { border: none; border-top: 2px solid var(--dark); opacity: .15; margin: 1.6rem 0 1.1rem; }
+.agegate-note { font-size: .78rem; line-height: 1.5; color: var(--mid); }
+.agegate-note + .agegate-note { margin-top: .6rem; }
+.agegate-note a { color: var(--dark); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.agegate-note a:hover { color: var(--troebel-gold); }
+.agegate-note--alt { font-family: var(--font-h); font-size: .95rem; color: var(--dark); transform: rotate(-1deg); }
+
+@keyframes agegateFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes agegateIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+@media(max-width: 600px){
+  .agegate { align-items: flex-start; padding: 2.25rem .9rem 1.5rem; }
+  .agegate-card { padding: 2rem 1.25rem 1.5rem; box-shadow: 6px 6px 0 var(--troebel-gold); }
+  .agegate-logo { font-size: 1.4rem; }
+  .agegate-q { margin-bottom: 1.5rem; }
+  .agegate-actions { flex-direction: column; gap: .75rem; }
+  .agegate-actions .btn, .agegate-actions .btn-outline { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .agegate, .agegate-card { animation: none; }
+  .agegate .btn:hover, .agegate .btn-outline:hover { transform: skew(-6deg); }
+}

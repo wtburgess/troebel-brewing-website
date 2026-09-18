@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Anton, Roboto_Condensed, Permanent_Marker } from "next/font/google";
 import "./globals.css";
 import ModalProvider from "@/components/providers/ModalProvider";
+import { AGE_GATE_INLINE_SCRIPT } from "@/lib/age-gate";
 import PageViewTracker from "@/components/providers/PageViewTracker";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -87,11 +88,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nl-BE">
+    <html lang="nl-BE" suppressHydrationWarning>
       <body
         className={`${anton.variable} ${robotoCondensed.variable} ${permanentMarker.variable} antialiased`}
         suppressHydrationWarning
       >
+        <script dangerouslySetInnerHTML={{ __html: AGE_GATE_INLINE_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
