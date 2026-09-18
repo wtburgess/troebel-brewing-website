@@ -631,7 +631,7 @@ html[data-age-ok] .agegate { display: none; }
 html:not([data-age-ok]) body { overflow: hidden; }
 
 .agegate { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1.5rem 1.25rem; background: rgba(13,13,11,.96); background-image: radial-gradient(circle at 50% 0%, rgba(212,150,26,.18), transparent 62%); overflow-y: auto; overscroll-behavior: contain; animation: agegateFade .22s ease-out both; }
-.agegate-card { width: 100%; max-width: 520px; background: var(--warm-white); border: 3px solid var(--dark); box-shadow: 10px 10px 0 var(--troebel-gold); padding: 2.75rem 2.25rem 2rem; text-align: center; animation: agegateIn .3s cubic-bezier(.2,.8,.3,1) both; }
+.agegate-card { width: 100%; max-width: 520px; background: var(--warm-white); border: 3px solid var(--dark); box-shadow: 10px 10px 0 var(--troebel-gold); padding: 2.75rem 2.25rem 2.5rem; text-align: center; animation: agegateIn .3s cubic-bezier(.2,.8,.3,1) both; }
 
 .agegate-logo { font-family: var(--font-d); font-size: 1.7rem; line-height: .95; letter-spacing: .02em; text-transform: uppercase; margin-bottom: 1rem; }
 .agegate-logo span { color: var(--troebel-gold); }
@@ -645,19 +645,12 @@ html:not([data-age-ok]) body { overflow: hidden; }
 .agegate-btn { padding: .85rem 1.9rem; font-size: 1rem; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; }
 .agegate .btn:focus-visible, .agegate .btn-outline:focus-visible { outline: 3px solid var(--troebel-gold); outline-offset: 4px; }
 
-.agegate-divider { border: none; border-top: 2px solid var(--dark); opacity: .15; margin: 1.6rem 0 1.1rem; }
-.agegate-note { font-size: .78rem; line-height: 1.5; color: var(--mid); }
-.agegate-note + .agegate-note { margin-top: .6rem; }
-.agegate-note a { color: var(--dark); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
-.agegate-note a:hover { color: var(--troebel-gold); }
-.agegate-note--alt { font-family: var(--font-h); font-size: .95rem; color: var(--dark); transform: rotate(-1deg); }
-
 @keyframes agegateFade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes agegateIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
 @media(max-width: 600px){
   .agegate { align-items: flex-start; padding: 2.25rem .9rem 1.5rem; }
-  .agegate-card { padding: 2rem 1.25rem 1.5rem; box-shadow: 6px 6px 0 var(--troebel-gold); }
+  .agegate-card { padding: 2rem 1.25rem 1.75rem; box-shadow: 6px 6px 0 var(--troebel-gold); }
   .agegate-logo { font-size: 1.4rem; }
   .agegate-q { margin-bottom: 1.5rem; }
   .agegate-actions { flex-direction: column; gap: .75rem; }

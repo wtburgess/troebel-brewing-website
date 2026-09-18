@@ -191,14 +191,6 @@ export default function AgeGate() {
                 Nee
               </button>
             </div>
-            <hr className="agegate-divider" />
-            <p className="agegate-note">
-              Door verder te gaan bevestig je dat je 18 jaar of ouder bent. Lees onze{" "}
-              <a href="/voorwaarden/">algemene voorwaarden</a>.
-            </p>
-            <p className="agegate-note agegate-note--alt">
-              Geniet, maar drink met mate.
-            </p>
           </>
         ) : (
           <>
@@ -224,14 +216,6 @@ export default function AgeGate() {
                 Terug
               </button>
             </div>
-            <hr className="agegate-divider" />
-            <p className="agegate-note">
-              Meer weten over alcohol en verantwoord gedrag? Kijk op{" "}
-              <a href="https://www.bob.be/" target="_blank" rel="noopener noreferrer">
-                bob.be
-              </a>
-              .
-            </p>
           </>
         )}
       </div>
