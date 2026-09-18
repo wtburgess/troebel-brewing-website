@@ -130,7 +130,7 @@ export default async function Home() {
           <div>
             <span className="section-label" style={{ color: 'var(--troebel-gold)' }}>tapverhuur</span>
             <h2>JOUW EVENT,<br />ONZE <span>TAP</span></h2>
-            <p>Wij leveren de tap, het bier en de kennis. Jij geniet van het feestje. Simpeler dan het klinkt, mooier dan je verwacht.</p>
+            <p>Wij leveren de tap, het bier en de kennis. Jij geniet van het feestje.</p>
             <ul className="tap-features">
               <li>Volledige installatie</li>
               <li>Keuze uit onze bieren op tap</li>
