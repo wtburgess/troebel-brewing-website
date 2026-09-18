@@ -149,7 +149,7 @@ img { display: block; max-width: 100%; }
 .tap .btn { background: var(--troebel-gold); color: var(--dark); }
 .tap .btn:hover { background: var(--warm-white); color: var(--dark); }
 .tap-img-wrap { border: 3px solid rgba(255,255,255,.15); overflow: hidden; position: relative; }
-.tap-img-wrap img { width: 100%; height: 420px; object-fit: cover; filter: grayscale(40%) contrast(1.05); transition: .4s; }
+.tap-img-wrap img { width: 100%; height: 420px; object-fit: cover; object-position: 50% 38%; filter: grayscale(40%) contrast(1.05); transition: .4s; }
 .tap-img-wrap:hover img { filter: grayscale(0%) contrast(1); transform: scale(1.02); }
 .tap-img-badge { position: absolute; bottom: 1rem; left: 1rem; background: var(--troebel-gold); color: var(--dark); font-family: var(--font-d); font-size: .7rem; padding: .3rem .8rem; text-transform: uppercase; letter-spacing: .06em; transform: skew(-6deg); }
 

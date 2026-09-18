@@ -139,7 +139,7 @@ export default async function Home() {
             <a href="#contact" className="btn" style={{ fontSize: '1rem', padding: '.65rem 2rem' }}>Vraag een offerte →</a>
           </div>
           <div className="tap-img-wrap">
-            <img src="/bbq.jpg" alt="Garden party met vrienden" />
+            <img src="/tapverhuur.jpg" alt="Onze mobiele tap op een event, met drie bieren uitgeschonken" />
             <div className="tap-img-badge">Beschikbaar voor events</div>
           </div>
         </div>
